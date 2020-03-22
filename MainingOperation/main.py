@@ -17,10 +17,19 @@ class Main:
     def __init__(self):
         self._screen = pygame.display.set_mode(size=(1200, 800))
         self._aircraft = Aircraft(self._screen)
+        #原尺寸
+        self._size_original = (self._aircraft.rect.width, self._aircraft.rect.height)
+        #缩小尺寸
+        self._size_small = (int(self._aircraft.rect.width/2), int(self._aircraft.rect.height/2))
+        #变大尺寸1
+        self._size_big1 = (self._aircraft.rect.width*2, self._aircraft.rect.height*2)
+        #变大尺寸2
+        self._size_big2 = (self._aircraft.rect.width*3, self._aircraft.rect.height*3)
         self._can_up = True
         self._can_down = True
         self._can_left = True
         self._can_right = True
+        self._can_back = False
 
     def _event_checking(self):
         """
@@ -45,17 +54,21 @@ class Main:
         else:
             self._can_down = False
         if keys_pressed[pygame.K_2]:
-            self._aircraft.ImageOfAircraft = pygame.transform.scale(
-                self._aircraft.ImageOfAircraft, (self._aircraft.rect.width*2, self._aircraft.rect.height*2))
+            self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                       size=self._size_big1)
         if keys_pressed[pygame.K_3]:
-            self._aircraft.ImageOfAircraft = pygame.transform.scale(
-                self._aircraft.ImageOfAircraft, (self._aircraft.rect.width*3, self._aircraft.rect.height*3))
-        if keys_pressed[pygame.K_4]:
-            self._aircraft.ImageOfAircraft = pygame.transform.scale(
-                self._aircraft.ImageOfAircraft, (self._aircraft.rect.width*4, self._aircraft.rect.height*4))
+            self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                       size=self._size_big2)
         if keys_pressed[pygame.K_1]:
-            self._aircraft.ImageOfAircraft = pygame.transform.scale(
-                self._aircraft.ImageOfAircraft, (self._aircraft.rect.width/2, self._aircraft.rect.height/2))
+            if not self._can_back:
+                self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                           size=self._size_small)
+                self._can_back = True
+            else:
+                self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                           size=self._size_original)
+                self._can_back = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -67,19 +80,41 @@ class Main:
         """
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
-        if self._can_up and self._aircraft.rect.top > self._aircraft.RectBorderOfScreen.top:
-            print(self._aircraft.rect.top, self._aircraft.RectBorderOfScreen.top)
-            pre_pos = float(self._aircraft.rect.centery)
-            self._aircraft.rect.centery = pre_pos - self._aircraft.v
-        if self._can_down and self._aircraft.rect.bottom < self._aircraft.RectBorderOfScreen.bottom:
-            pre_pos = float(self._aircraft.rect.centery)
-            self._aircraft.rect.centery = pre_pos + self._aircraft.v
-        if self._can_left and self._aircraft.rect.left > self._aircraft.RectBorderOfScreen.left:
-            pre_pos = float(self._aircraft.rect.centerx)
-            self._aircraft.rect.centerx = pre_pos - self._aircraft.v
-        if self._can_right and self._aircraft.rect.right < self._aircraft.RectBorderOfScreen.right:
-            pre_pos = float(self._aircraft.rect.centerx)
-            self._aircraft.rect.centerx = pre_pos + self._aircraft.v
+        if self._can_up and self._aircraft.rect.top >= self._aircraft.RectBorderOfScreen.top:
+            if self._aircraft.rect.top - self._aircraft.RectBorderOfScreen.top <= self._aircraft.v:
+                self._aircraft.rect.top = self._aircraft.RectBorderOfScreen.top
+            else:
+                pre_pos = float(self._aircraft.rect.centery)
+                self._aircraft.rect.centery = pre_pos - self._aircraft.v
+        elif self._aircraft.rect.top < self._aircraft.RectBorderOfScreen.top: #控制飞行器大小切换后机身不出边界
+            self._aircraft.rect.top = self._aircraft.RectBorderOfScreen.top
+
+        if self._can_down and self._aircraft.rect.bottom <= self._aircraft.RectBorderOfScreen.bottom:
+            if self._aircraft.RectBorderOfScreen.bottom - self._aircraft.rect.bottom <= self._aircraft.v:
+                self._aircraft.rect.bottom = self._aircraft.RectBorderOfScreen.bottom
+            else:
+                pre_pos = float(self._aircraft.rect.centery)
+                self._aircraft.rect.centery = pre_pos + self._aircraft.v
+        elif self._aircraft.rect.bottom > self._aircraft.RectBorderOfScreen.bottom: #同上
+            self._aircraft.rect.bottom = self._aircraft.RectBorderOfScreen.bottom
+
+        if self._can_left and self._aircraft.rect.left >= self._aircraft.RectBorderOfScreen.left:
+            if self._aircraft.rect.left - self._aircraft.RectBorderOfScreen.left <= self._aircraft.v:
+                self._aircraft.rect.left = self._aircraft.RectBorderOfScreen.left
+            else:
+                pre_pos = float(self._aircraft.rect.centerx)
+                self._aircraft.rect.centerx = pre_pos - self._aircraft.v
+        elif self._aircraft.rect.left < self._aircraft.RectBorderOfScreen.left: #同上
+            self._aircraft.rect.left = self._aircraft.RectBorderOfScreen.left
+
+        if self._can_right and self._aircraft.rect.right <= self._aircraft.RectBorderOfScreen.right:
+            if self._aircraft.RectBorderOfScreen.right - self._aircraft.rect.right <= self._aircraft.v:
+                self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right
+            else:
+                pre_pos = float(self._aircraft.rect.centerx)
+                self._aircraft.rect.centerx = pre_pos + self._aircraft.v
+        elif self._aircraft.rect.right > self._aircraft.RectBorderOfScreen.right:
+            self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right
 
         self._aircraft.blitAircraft()
         pygame.display.flip()

@@ -13,12 +13,14 @@ import pymysql
 db = pymysql.connect('localhost', 'root',
                      'xiaosonggege1025', 'MyfirstDatabase')
 cursor = db.cursor()
-# cursor.execute("""insert into user values (3, 'c', 800)""")
+a = 700
+# cursor.execute("""insert into user values (4, 'd', %s)""" % a)
 # cursor.execute("update user set name = 'd' where id = 3")
-cursor.execute("delete from user where id = %s" % 3)
-db.commit()
-cursor.execute('select * from user')
+# cursor.execute("delete from user where id = %s" % 3)
+# db.commit()
+print(cursor.execute('describe user'))
+# cursor.execute('select * from user')
 for i in cursor.fetchall():
-    print(i[1])
+    print(i[2])
 # print(cursor.fetchall().__class__)
 db.close()

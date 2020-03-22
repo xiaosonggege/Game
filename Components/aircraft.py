@@ -25,10 +25,14 @@ class AircraftProperty:
             instance.__dict__['_RectBorderOfScreen'] = instance.__dict__[self._name].get_rect()
             instance.__dict__['_rect'].centerx = instance.__dict__['_RectBorderOfScreen'].centerx
             instance.__dict__['_rect'].bottom = instance.__dict__['_RectBorderOfScreen'].bottom
+        elif self._name == '_rect':
+            instance.__dict__[self._name].centerx = value[0]
+            instance.__dict__[self._name].centery = value[-1]
         else:
             instance.__dict__[self._name] = value
 
 class Aircraft:
+
     def __init__(self, screen:pygame.Surface):
         """
         飞行器基类构造函数
@@ -56,17 +60,32 @@ class Aircraft:
         self._screen.blit(self._ImageOfAircraft, self._rect)
         # print(self._rect)
 
+    def change_size(self, pos: tuple, size: tuple):
+        """
+        原地改变飞行器的尺寸
+        :param pos: 飞行器原始位置
+        :param size: 飞行器新尺寸
+        :return: None
+        """
+        self._ImageOfAircraft = pygame.transform.smoothscale(self._ImageOfAircraft, size)
+        self._rect = self._ImageOfAircraft.get_rect()
+        self.rect = pos
+
+
 if __name__ == '__main__':
     import sys
     pygame.init()
     screen = pygame.display.set_mode(size=(1200, 800))
-    screen.fill((100, 100, 100))
+    # screen.fill((100, 100, 100))
     aircraft = Aircraft(screen=screen)
-    aircraft.rect.centerx += 1
+    print(aircraft.rect)
+    aircraft.ImageOfAircraft = pygame.transform.smoothscale(aircraft.ImageOfAircraft, (int(aircraft.rect.width/2), int(aircraft.rect.height/2)))
+    print(aircraft.rect)
+    # aircraft.rect.centerx += 1
     # for i in aircraft.rect.__dir__():
     #     print(i)
-    print(aircraft.rect.top, aircraft.RectBorderOfScreen.top)
-    print(aircraft.rect.bottom, aircraft.RectBorderOfScreen.bottom, aircraft.rect.height)
+    # print(aircraft.rect.top, aircraft.RectBorderOfScreen.top)
+    # print(aircraft.rect.bottom, aircraft.RectBorderOfScreen.bottom, aircraft.rect.height)
     # aircraft.ImageOfAircraft = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
     # aircraft.screen = pygame.display.set_mode(size=(1000, 500))
 
