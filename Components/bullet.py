@@ -17,12 +17,12 @@ class BulletProperty:
         self._name = '_' + name
     def __get__(self, instance, owner):
         return instance.__dict__[self._name]
-    def __set__(self, instance, value):
-        if self._name == '_aircraft':
-            instance.__dict__[self._name] = value
-            instance.__dict__['_RectOfBullet'].centerx = value.rect.centerx
-            instance.__dict__['_RectOfBullet'].top = value.rect.top
-        elif self._name == '_RectOfBullet': #此时value为Settings实例
+    def __set__(self, instance, value:Settings):
+        # if self._name == '_aircraft':
+        #     instance.__dict__[self._name] = value
+        #     instance.__dict__['_RectOfBullet'].centerx = value.rect.centerx
+        #     instance.__dict__['_RectOfBullet'].top = value.rect.top
+        if self._name == '_RectOfBullet': #此时value为Settings实例
             instance.__dict__[self._name] = pygame.Rect(
                 instance.__dict__[self._name].centerx,
                 instance.__dict__[self._name].top,
@@ -41,7 +41,7 @@ class Bullet(Sprite):
 
         self._color = Settings().bullet_color #子弹颜色
         self._speed = Settings().bullet_speed #子弹速度
-    RectOfBullet = BulletProperty('_RectOfBullet')
+    RectOfBullet = BulletProperty('RectOfBullet')
 
     def update(self):
         """

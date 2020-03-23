@@ -28,7 +28,7 @@ class Settings:
         self._background = pygame.image.load(background_path) if background_path is not None else None
         self._bullet_color = 60, 60, 60
         self._bullet_size = 3, 15
-        self._bullet_speed = 60
+        self._bullet_speed = 30
     screen_width = SettingsProperty('screen_width')
     screen_height = SettingsProperty('screen_height')
     bg_color = SettingsProperty('bg_color')
@@ -36,6 +36,29 @@ class Settings:
     bullet_color = SettingsProperty('bullet_color')
     bullet_size = SettingsProperty('bullet_size')
     bullet_speed = SettingsProperty('bullet_speed')
+
+#带有加速度
+class PosWithAccelerate:
+    def __init__(self, can_positive, can_negative, v):
+        self._time = 1
+        self._can_positive = can_positive
+        self._can_negative = can_negative
+        self._v = v
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return True
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._can_positive and not self._can_negative:
+            return self._v * self._time + 0.5 * 1 * self._v ** 2
+
+
 
 if __name__ == '__main__':
     s = Settings()
