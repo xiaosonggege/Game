@@ -26,10 +26,16 @@ class Settings:
         self._screen_height = 800
         self._bg_color = (230, 230, 230) if not background_path else None
         self._background = pygame.image.load(background_path) if background_path is not None else None
+        self._bullet_color = 60, 60, 60
+        self._bullet_size = 3, 15
+        self._bullet_speed = 60
     screen_width = SettingsProperty('screen_width')
     screen_height = SettingsProperty('screen_height')
     bg_color = SettingsProperty('bg_color')
     background = SettingsProperty('background')
+    bullet_color = SettingsProperty('bullet_color')
+    bullet_size = SettingsProperty('bullet_size')
+    bullet_speed = SettingsProperty('bullet_speed')
 
 if __name__ == '__main__':
     s = Settings()

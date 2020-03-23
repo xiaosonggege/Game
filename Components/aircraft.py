@@ -42,7 +42,7 @@ class Aircraft:
         self._ImageOfAircraft = pygame.image.load('/Users/songyunlong/Desktop/c++程序设计实践课/ship.bmp') #飞行器Surface
         self._RectBorderOfScreen = self._screen.get_rect() #屏幕矩形框Rect
         self._rect = self._ImageOfAircraft.get_rect() #飞行器矩形框Rect
-        self._v = 1.5 #飞船速度
+        self._v = 30 #飞船速度
 
         self._rect.centerx = self._RectBorderOfScreen.centerx #飞行器矩形框中心位置横标与屏幕矩形框中心位置横标相等
         self._rect.bottom = self._RectBorderOfScreen.bottom #飞行器矩形框底端与屏幕矩形框底端相等

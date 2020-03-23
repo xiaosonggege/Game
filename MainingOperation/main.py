@@ -12,11 +12,14 @@ import pygame
 import sys
 from MainingOperation.basic_settings import Settings
 from Components.aircraft import Aircraft
+from Components.bullet import Bullet
+from pygame.sprite import Group, Sprite
 class Main:
 
     def __init__(self):
         self._screen = pygame.display.set_mode(size=(1200, 800))
         self._aircraft = Aircraft(self._screen)
+        self._bullets = Group() #创建存储子弹的编组
         #原尺寸
         self._size_original = (self._aircraft.rect.width, self._aircraft.rect.height)
         #缩小尺寸
@@ -37,6 +40,7 @@ class Main:
         :return: None
         """
         keys_pressed = pygame.key.get_pressed()
+        #对飞行器
         if keys_pressed[pygame.K_RIGHT]:
             self._can_right = True
         else:
@@ -69,6 +73,12 @@ class Main:
                                            size=self._size_original)
                 self._can_back = False
 
+        #对子弹
+        if keys_pressed[pygame.K_SPACE]:
+            new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
+            self._bullets.add(new_bullet)#将新子弹加入编组进行管理
+
+        #退出键
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -80,6 +90,8 @@ class Main:
         """
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
+        #更新所有子弹
+        self._bullets.update()
         if self._can_up and self._aircraft.rect.top >= self._aircraft.RectBorderOfScreen.top:
             if self._aircraft.rect.top - self._aircraft.RectBorderOfScreen.top <= self._aircraft.v:
                 self._aircraft.rect.top = self._aircraft.RectBorderOfScreen.top
@@ -117,6 +129,14 @@ class Main:
             self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right
 
         self._aircraft.blitAircraft()
+        # 在飞船和外星人后面重绘所有子弹
+        for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
+            bullet.draw_Bullet()
+        #删除消失的子弹
+        for bullet in self._bullets.sprites():
+            if bullet.RectOfBullet.bottom < 0:
+                self._bullets.remove(bullet)
+
         pygame.display.flip()
         # pygame.display.update()
 
