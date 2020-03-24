@@ -22,13 +22,18 @@ class SettingsProperty:
 
 class Settings:
     def __init__(self, background_path=None):
+        #screen
         self._screen_width = 1200
         self._screen_height = 800
         self._bg_color = (230, 230, 230) if not background_path else None
         self._background = pygame.image.load(background_path) if background_path is not None else None
+        #bullet
         self._bullet_color = 60, 60, 60
         self._bullet_size = 3, 15
         self._bullet_speed = 30
+        #virus
+        self._virus_size = 50, 50
+        self._virus_speed = 20
     screen_width = SettingsProperty('screen_width')
     screen_height = SettingsProperty('screen_height')
     bg_color = SettingsProperty('bg_color')
@@ -36,6 +41,8 @@ class Settings:
     bullet_color = SettingsProperty('bullet_color')
     bullet_size = SettingsProperty('bullet_size')
     bullet_speed = SettingsProperty('bullet_speed')
+    virus_size = SettingsProperty('virus_size')
+    virus_speed = SettingsProperty('virus_speed')
 
 #带有加速度
 class PosWithAccelerate:

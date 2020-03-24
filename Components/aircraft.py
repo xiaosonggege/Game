@@ -80,7 +80,7 @@ if __name__ == '__main__':
     aircraft = Aircraft(screen=screen)
     print(aircraft.rect)
     aircraft.ImageOfAircraft = pygame.transform.smoothscale(aircraft.ImageOfAircraft, (int(aircraft.rect.width/2), int(aircraft.rect.height/2)))
-    print(aircraft.rect)
+    print(type(aircraft.rect.x))
     # aircraft.rect.centerx += 1
     # for i in aircraft.rect.__dir__():
     #     print(i)
