@@ -15,6 +15,13 @@ from Components.aircraft import Aircraft
 from Components.bullet import Bullet
 from pygame.sprite import Group
 from Components.virus import Virus
+import numpy as np
+
+def PositionInit(low:int, high:int, count:int):
+    set_of_posx = np.random.randint(low=low, high=high, size=count)
+    for i in set_of_posx:
+        yield i
+
 class Main:
     level_virus = {'easy':100, 'middle':300, 'defficult':500}
     def __init__(self):
@@ -25,6 +32,10 @@ class Main:
         self._is_win = False #标志游戏输赢
         #游戏等级
         self._NumOfViruses = Main.level_virus['easy'] #改
+        #病毒初始位置生成器
+        self._init_posxes = PositionInit(low=self._screen.get_rect().left,
+                                         high=self._screen.get_rect().right,
+                                         count=self._NumOfViruses)
         #原尺寸
         self._size_original = (self._aircraft.rect.width, self._aircraft.rect.height)
         #缩小尺寸
@@ -83,8 +94,9 @@ class Main:
             new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
             self._bullets.add(new_bullet)#将新子弹加入编组进行管理
         #如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
-        if len(self._viruses) < self._NumOfViruses or not self._is_win:
-            new_virus = Virus(screen=self._screen, virus_image=None, pos_x=None) #改
+        if len(self._viruses) < self._NumOfViruses:
+            virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+            new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
             self._viruses.add(new_virus)
         #退出键
         if keys_pressed[pygame.K_q]:

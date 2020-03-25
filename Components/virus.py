@@ -13,11 +13,6 @@ import numpy as np
 from pygame.sprite import Sprite
 from MainingOperation.basic_settings import Settings
 
-def PositionInit(low:int, high:int, count:int):
-    set_of_posx = np.random.randint(low=low, high=high, size=count)
-    for i in set_of_posx:
-        yield i
-
 class VirusProperty:
     def __init__(self, name):
         self._name = '_' + name
@@ -41,7 +36,6 @@ class Virus(Sprite):
         self._RectOfVirus = self._ImageOfVirus.get_rect()
         self._virus_speed = Settings().virus_speed
         self._dead = False #标志着病毒的死亡
-
         #确定病毒位置
         self._RectOfVirus.bottom = 30
         self._RectOfVirus.x = pos_x
@@ -63,8 +57,24 @@ class Virus(Sprite):
         :param args:
         :return: None
         """
-        pass
-        # if self._RectOfVirus.x
+        position_x = np.random.choice(a=[-1, 1], p=[0.5, 0.5])
+        if position_x == -1:
+            if self._RectOfVirus.left >= 0:
+                if self._RectOfVirus.left - self._virus_speed > 0:
+                    self._RectOfVirus.left -= self._virus_speed
+                else:
+                    self._RectOfVirus.left = 0
+            else:
+                self._RectOfVirus += self._virus_speed
+        else:
+            if self._RectOfVirus.right <= self._screen.get_rect().right:
+                if self._RectOfVirus.right + self._virus_speed < self._screen.get_rect().right:
+                    self._RectOfVirus.right += self._virus_speed
+                else:
+                    self._RectOfVirus.right = self._screen.get_rect().right
+            else:
+                self._RectOfVirus.right -= self._virus_speed
+        self._RectOfVirus.y -= self._virus_speed
 
 # class SmallVirus(Virus):
 #     def __init__(self):
