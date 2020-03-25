@@ -94,10 +94,10 @@ class Main:
             new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
             self._bullets.add(new_bullet)#将新子弹加入编组进行管理
         #如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
-        if len(self._viruses) < self._NumOfViruses:
-            virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
-            new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
-            self._viruses.add(new_virus)
+        # if len(self._viruses) < self._NumOfViruses:
+        #     virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+        #     new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
+        #     self._viruses.add(new_virus)
         #退出键
         if keys_pressed[pygame.K_q]:
             sys.exit()
@@ -117,6 +117,12 @@ class Main:
         # self._virus = Virus(screen=self._screen, virus_image=virus_image_path,
         #                     pos_x=int(self._screen.get_rect().centerx))
         # self._virus.blit_virus()
+        # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
+        if len(self._viruses) < self._NumOfViruses:
+            # print(len(self._viruses))
+            virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+            new_virus = Virus(screen=self._screen, virus_image=virus_image_path, pos_x=next(self._init_posxes))  # 改
+            self._viruses.add(new_virus)
         #更新所有病毒
         self._viruses.update()
         #更新所有子弹
@@ -158,7 +164,9 @@ class Main:
             self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right
 
         self._aircraft.blitAircraft()
-
+        #绘制所有病毒
+        for virus in self._viruses.sprites():
+            virus.blit_virus()
         # 在飞行器和病毒后面重绘所有子弹
         for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
             bullet.draw_Bullet()
@@ -166,6 +174,7 @@ class Main:
         for bullet in self._bullets.sprites():
             if bullet.RectOfBullet.bottom < 0:
                 self._bullets.remove(bullet)
+
         #删除被击中且被达到击毙条件的病毒
         for virus in self._viruses.sprites():
             if virus.dead:

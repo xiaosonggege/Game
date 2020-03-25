@@ -74,7 +74,7 @@ class Virus(Sprite):
                     self._RectOfVirus.right = self._screen.get_rect().right
             else:
                 self._RectOfVirus.right -= self._virus_speed
-        self._RectOfVirus.y -= self._virus_speed
+        self._RectOfVirus.y += self._virus_speed
 
 # class SmallVirus(Virus):
 #     def __init__(self):
