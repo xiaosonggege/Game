@@ -170,6 +170,9 @@ class Main:
         # 在飞行器和病毒后面重绘所有子弹
         for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
             bullet.draw_Bullet()
+        #击中病毒的子弹以及被击中的病毒
+        # collisions = pygame.sprite.groupcollide(
+        #     groupa=self._bullets, groupb=self._viruses, dokilla=True, dokillb=True)#dokill是碰撞后是否立即删除
         #删除消失的子弹
         for bullet in self._bullets.sprites():
             if bullet.RectOfBullet.bottom < 0:
