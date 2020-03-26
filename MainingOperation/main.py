@@ -118,11 +118,15 @@ class Main:
         #                     pos_x=int(self._screen.get_rect().centerx))
         # self._virus.blit_virus()
         # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
-        if len(self._viruses) < self._NumOfViruses:
+        if len(self._viruses) <= self._NumOfViruses:
             # print(len(self._viruses))
             virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
-            new_virus = Virus(screen=self._screen, virus_image=virus_image_path, pos_x=next(self._init_posxes))  # 改
-            self._viruses.add(new_virus)
+            print(len(self._viruses))
+            try:
+                new_virus = Virus(screen=self._screen, virus_image=virus_image_path, pos_x=next(self._init_posxes))  # 改
+                self._viruses.add(new_virus)
+            except StopIteration:
+                sys.exit()
         #更新所有病毒
         self._viruses.update()
         #更新所有子弹
@@ -171,11 +175,11 @@ class Main:
         for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
             bullet.draw_Bullet()
         #击中病毒的子弹以及被击中的病毒
-        # collisions = pygame.sprite.groupcollide(
-        #     groupa=self._bullets, groupb=self._viruses, dokilla=True, dokillb=True)#dokill是碰撞后是否立即删除
+        collisions = pygame.sprite.groupcollide(
+            groupa=self._bullets, groupb=self._viruses, dokilla=True, dokillb=True)#dokill是碰撞后是否立即删除
         #删除消失的子弹
         for bullet in self._bullets.sprites():
-            if bullet.RectOfBullet.bottom < 0:
+            if bullet.rect_.bottom < 0:
                 self._bullets.remove(bullet)
 
         #删除被击中且被达到击毙条件的病毒

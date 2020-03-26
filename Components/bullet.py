@@ -14,7 +14,7 @@ from MainingOperation.basic_settings import Settings
 from Components.aircraft import Aircraft
 class BulletProperty:
     def __init__(self, name):
-        self._name = '_' + name
+        self._name = name
     def __get__(self, instance, owner):
         return instance.__dict__[self._name]
     def __set__(self, instance, value:Settings):
@@ -22,7 +22,7 @@ class BulletProperty:
         #     instance.__dict__[self._name] = value
         #     instance.__dict__['_RectOfBullet'].centerx = value.rect.centerx
         #     instance.__dict__['_RectOfBullet'].top = value.rect.top
-        if self._name == '_RectOfBullet': #此时value为Settings实例
+        if self._name == 'rect': #此时value为Settings实例
             instance.__dict__[self._name] = pygame.Rect(
                 instance.__dict__[self._name].centerx,
                 instance.__dict__[self._name].top,
@@ -34,27 +34,27 @@ class Bullet(Sprite):
         self._screen = screen
         self._aircraft = aircraft
         #子弹边框x, y, width, height
-        self._RectOfBullet = pygame.Rect(0, 0, *Settings().bullet_size)
+        self.rect = pygame.Rect(0, 0, *Settings().bullet_size)
         #子弹初始位置与飞行器位置对齐
-        self._RectOfBullet.centerx = self._aircraft.rect.centerx
-        self._RectOfBullet.top = self._aircraft.rect.top
+        self.rect.centerx = self._aircraft.rect.centerx
+        self.rect.top = self._aircraft.rect.top
 
         self._color = Settings().bullet_color #子弹颜色
         self._speed = Settings().bullet_speed #子弹速度
-    RectOfBullet = BulletProperty('RectOfBullet')
+    rect_ = BulletProperty('rect')
 
     def update(self):
         """
         更新飞行器位置
         :return: None
         """
-        self._RectOfBullet.centery = float(self._RectOfBullet.centery) - self._speed
+        self.rect.centery = float(self.rect.centery) - self._speed
     def draw_Bullet(self):
         """
         在screen上绘制子弹
         :return: None
         """
-        pygame.draw.rect(self._screen, self._color, self._RectOfBullet)
+        pygame.draw.rect(self._screen, self._color, self.rect)
 
 if __name__ == '__main__':
     import sys
