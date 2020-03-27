@@ -33,7 +33,7 @@ class Settings:
         self._bullet_speed = 30
         #virus
         self._virus_size = 50, 50
-        self._virus_speed = 20
+        self._virus_speed = 1.5
     screen_width = SettingsProperty('screen_width')
     screen_height = SettingsProperty('screen_height')
     bg_color = SettingsProperty('bg_color')

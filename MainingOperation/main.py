@@ -22,6 +22,16 @@ def PositionInit(low:int, high:int, count:int):
     for i in set_of_posx:
         yield i
 
+def have_intersection(lineone:tuple, linetwo:tuple)->bool:
+    """
+    判断两条边是否有交集
+    :param lineone: 第一条边的两端点元组
+    :param linetwo: 第二条边的两端点元组
+    :return: bool
+    """
+
+
+
 class Main:
     level_virus = {'easy':100, 'middle':300, 'defficult':500}
     def __init__(self):
@@ -118,7 +128,7 @@ class Main:
         #                     pos_x=int(self._screen.get_rect().centerx))
         # self._virus.blit_virus()
         # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
-        if len(self._viruses) <= self._NumOfViruses:
+        if len(self._viruses) <= self._NumOfViruses: #增加病毒数量计数，到达一定数量之后就投入新病毒
             # print(len(self._viruses))
             virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
             print(len(self._viruses))
@@ -186,6 +196,13 @@ class Main:
         for virus in self._viruses.sprites():
             if virus.dead or virus.rect.bottom == self._screen.get_rect().bottom:
                 self._viruses.remove(virus)
+        #
+        #判断飞行器是否触碰到病毒
+        for virus in self._viruses.sprites():
+            #病毒上边界与飞行器下边界y值相等且横边有交集
+            #病毒下边界与飞行器上边界y值相等且横边有交集
+            #病毒左边界与飞行器右边界x值相等且纵边有交集
+            #病毒有边界与飞行器左边界x值相等且纵边有交集
         #
         pygame.display.flip()
         # pygame.display.update()

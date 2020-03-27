@@ -76,11 +76,15 @@ class Virus(Sprite):
                 self.rect.right -= self._virus_speed
         self.rect.y += self._virus_speed
 
-# class SmallVirus(Virus):
-#     def __init__(self):
-#         super().__init__()
+class VirusStyle2(Virus):
+    """
+    能分裂的病毒，每个病毒有0.5的概率分裂成两个病毒
+    """
+    def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
+        super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
+
 #
-# class MiddleVirus(Virus):
+# class VirusStyle3(Virus):
 #     def __init__(self):
 #         super().__init__()
 #
