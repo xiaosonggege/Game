@@ -22,18 +22,10 @@ def PositionInit(low:int, high:int, count:int):
     for i in set_of_posx:
         yield i
 
-def have_intersection(lineone:tuple, linetwo:tuple)->bool:
-    """
-    判断两条边是否有交集
-    :param lineone: 第一条边的两端点元组
-    :param linetwo: 第二条边的两端点元组
-    :return: bool
-    """
-
-
-
 class Main:
     level_virus = {'easy':100, 'middle':300, 'defficult':500}
+    #判断两条边是否有交集
+    have_intersection = lambda lineone, linetwo: True and (lineone[-1] < linetwo[0] or lineone[0] > linetwo[-1])
     def __init__(self):
         self._screen = pygame.display.set_mode(size=(1200, 800))
         self._aircraft = Aircraft(self._screen)
@@ -54,11 +46,28 @@ class Main:
         self._size_big1 = (self._aircraft.rect.width*2, self._aircraft.rect.height*2)
         #变大尺寸2
         self._size_big2 = (self._aircraft.rect.width*3, self._aircraft.rect.height*3)
+        #飞行器能否向相应方向移动的标志
         self._can_up = True
         self._can_down = True
         self._can_left = True
         self._can_right = True
-        self._can_back = False
+        #飞行器是否处在原本大小的标志
+        self._is_original = False
+        #飞行器是否处在第一级放大
+        self._is_big_level1 = False
+
+    def _judge_state_of_aircraft(self):#改
+        if self._is_original: #飞行器处于原本大小时，变大1个size
+            self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                       size=self._size_big1)
+            self._is_original = False
+            self._is_big_level1 = True
+        elif self._is_big_level1:
+            self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                       size=self._size_big2)
+            self._is_big_level1 = False
+        elif not self._is_original and not self._is_big_level1:
+            sys.exit()
 
     def _event_checking(self):
         """
@@ -90,14 +99,14 @@ class Main:
             self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
                                        size=self._size_big2)
         if keys_pressed[pygame.K_1]:
-            if not self._can_back:
+            if not self._is_original:
                 self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
                                            size=self._size_small)
-                self._can_back = True
+                self._is_original = True
             else:
                 self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
                                            size=self._size_original)
-                self._can_back = False
+                self._is_original = False
 
         #对子弹
         if keys_pressed[pygame.K_SPACE]:
@@ -197,12 +206,32 @@ class Main:
             if virus.dead or virus.rect.bottom == self._screen.get_rect().bottom:
                 self._viruses.remove(virus)
         #
-        #判断飞行器是否触碰到病毒
+        #判断飞行器是否触碰到病毒,即飞行器变大
         for virus in self._viruses.sprites():
             #病毒上边界与飞行器下边界y值相等且横边有交集
+            if virus.rect.top == self._aircraft.rect.bottom:
+                if not Main.have_intersection((virus.rect.left, virus.rect.right),
+                                          (self._aircraft.rect.left, self._aircraft.rect.right)):
+                    self._judge_state_of_aircraft()
+                    # sys.exit()#改成飞行器变大,如果在变大状态下再次与病毒相撞，则退出
             #病毒下边界与飞行器上边界y值相等且横边有交集
+            if virus.rect.bottom == self._aircraft.rect.top:
+                if not Main.have_intersection((virus.rect.left, virus.rect.right),
+                                          (self._aircraft.rect.left, self._aircraft.rect.right)):
+                    self._judge_state_of_aircraft()
+                    # sys.exit()#改成飞行器变大
             #病毒左边界与飞行器右边界x值相等且纵边有交集
+            if virus.rect.left == self._aircraft.rect.right:
+                if not Main.have_intersection((virus.rect.top, virus.rect.bottom),
+                                          (self._aircraft.rect.top, self._aircraft.rect.bottom)):
+                    self._judge_state_of_aircraft()
+                    # sys.exit()#改成飞行器变大
             #病毒有边界与飞行器左边界x值相等且纵边有交集
+            if virus.rect.right == self._aircraft.rect.left:
+                if not Main.have_intersection((virus.rect.top, virus.rect.bottom),
+                                              (self._aircraft.rect.top, self._aircraft.rect.bottom)):
+                    self._judge_state_of_aircraft()
+                    # sys.exit()  # 改成飞行器变大
         #
         pygame.display.flip()
         # pygame.display.update()
