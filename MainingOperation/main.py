@@ -24,8 +24,8 @@ def PositionInit(low:int, high:int, count:int):
 
 class Main:
     level_virus = {'easy':100, 'middle':300, 'defficult':500}
-    #判断两条边是否有交集
-    have_intersection = lambda lineone, linetwo: True and (lineone[-1] < linetwo[0] or lineone[0] > linetwo[-1])
+    #判断两条边是否有交集 返回True代表没有重叠
+    have_intersection = lambda lineone, linetwo: lineone[-1] < linetwo[0] or lineone[0] > linetwo[-1]
     def __init__(self):
         self._screen = pygame.display.set_mode(size=(1200, 800))
         self._aircraft = Aircraft(self._screen)
@@ -51,20 +51,22 @@ class Main:
         self._can_down = True
         self._can_left = True
         self._can_right = True
-        #飞行器是否处在原本大小的标志
-        self._is_original = False
-        #飞行器是否处在第一级放大
+        #飞行器是否处在原本大小的标志初始值
+        self._is_original = True
+        #飞行器是否处在第一级放大初始值
         self._is_big_level1 = False
 
     def _judge_state_of_aircraft(self):#改
         if self._is_original: #飞行器处于原本大小时，变大1个size
             self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
                                        size=self._size_big1)
+            self._aircraft.blitAircraft()
             self._is_original = False
             self._is_big_level1 = True
         elif self._is_big_level1:
             self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
                                        size=self._size_big2)
+            self._aircraft.blitAircraft()
             self._is_big_level1 = False
         elif not self._is_original and not self._is_big_level1:
             sys.exit()
@@ -92,12 +94,12 @@ class Main:
             self._can_down = True
         else:
             self._can_down = False
-        if keys_pressed[pygame.K_2]:
-            self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-                                       size=self._size_big1)
-        if keys_pressed[pygame.K_3]:
-            self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-                                       size=self._size_big2)
+        # if keys_pressed[pygame.K_2]:
+        #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+        #                                size=self._size_big1)
+        # if keys_pressed[pygame.K_3]:
+        #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+        #                                size=self._size_big2)
         if keys_pressed[pygame.K_1]:
             if not self._is_original:
                 self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
@@ -112,7 +114,7 @@ class Main:
         if keys_pressed[pygame.K_SPACE]:
             new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
             self._bullets.add(new_bullet)#将新子弹加入编组进行管理
-        #如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
+        #如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有 测试用
         # if len(self._viruses) < self._NumOfViruses:
         #     virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
         #     new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
