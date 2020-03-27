@@ -182,9 +182,9 @@ class Main:
             if bullet.rect_.bottom < 0:
                 self._bullets.remove(bullet)
 
-        #删除被击中且被达到击毙条件的病毒
+        #删除被击中且被达到击毙条件或到达屏幕底端的病毒
         for virus in self._viruses.sprites():
-            if virus.dead:
+            if virus.dead or virus.rect.bottom == self._screen.get_rect().bottom:
                 self._viruses.remove(virus)
         #
         pygame.display.flip()
