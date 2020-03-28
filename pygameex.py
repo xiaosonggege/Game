@@ -42,6 +42,9 @@ def run_game():
     bg_color = (100, 100, 100)
     screen.fill(bg_color)
     while True:
+        a = pygame.mouse.get_pressed()
+        if a[0] == 1:
+            print('xing')
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
