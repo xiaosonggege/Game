@@ -35,8 +35,7 @@ class Main:
         self._is_win = False #标志游戏输赢
         #游戏是否开始
         self._start_playing = False
-        # 按钮
-        self._button = Button(screen=self._screen, message='play')
+
         #游戏等级
         self._NumOfViruses = Main.level_virus['easy'] #改
         #病毒初始位置生成器
@@ -141,8 +140,7 @@ class Main:
         """
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
-        #绘制开始按钮
-        self._button.draw_button()
+
         if self._start_playing:
             # 测试病毒类
             # virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
@@ -256,11 +254,20 @@ class Main:
         pygame.display.set_caption("Alien Invasion")
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
-
+        # 按钮
+        self._button = Button(screen=self._screen, message='play')
         #
         self._aircraft.v = 30
         #
         while True:
+            # 测试用
+            # for event in pygame.event.get():
+            #     if event.type == pygame.QUIT:
+            #         sys.exit()
+            # 绘制开始按钮
+            if not self._start_playing:
+                self._button.draw_button()
+            pygame.display.flip()
             self._event_checking()
             self._update_scene()
 
