@@ -80,9 +80,19 @@ class Main:
         事件队列检查
         :return: None
         """
+        #判断光标是否在按钮区域中
+        def mouse_in_button_region (mouse_x, mouse_y, button):
+            station1 = mouse_x >= button.rect.left
+            station2 = mouse_x <= button.rect.right
+            station3 = mouse_y >= button.rect.top
+            station4 = mouse_y <= button.rect.bottom
+            return station1 and station2 and station3 and station4
+
         mouse_pressed = pygame.mouse.get_pressed()
         if mouse_pressed[0] == 1:
-            self._start_playing = True
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
+                self._start_playing = True
         keys_pressed = pygame.key.get_pressed()
         #对飞行器
         if keys_pressed[pygame.K_RIGHT]:
@@ -254,6 +264,8 @@ class Main:
         pygame.display.set_caption("Alien Invasion")
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
+        #添加游戏边线
+
         # 按钮
         self._button = Button(screen=self._screen, message='play')
         #
