@@ -35,8 +35,8 @@ class Button:
 
     def draw_button(self):
         #绘制一个用颜色填充的按钮，再绘制文本
-        self._screen.fill(color=self._button_color, rect=self.rect) #按钮在屏幕中央着色
-        self._screen.blit(self._msg_image, self._msg_image_rect) #按钮绘制在屏幕中央
+        self._screen.fill(color=self._button_color, rect=self.rect) #按钮着色
+        self._screen.blit(self._msg_image, self._msg_image_rect) #按钮绘制
 
 if __name__ == '__main__':
     pass

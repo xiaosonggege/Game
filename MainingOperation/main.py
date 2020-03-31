@@ -89,6 +89,7 @@ class Main:
         事件队列检查
         :return: None
         """
+
         #判断光标是否在按钮区域中
         def mouse_in_button_region (mouse_x, mouse_y, button):
             station1 = mouse_x >= button.rect.left
@@ -103,61 +104,65 @@ class Main:
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
         keys_pressed = pygame.key.get_pressed()
-        #对飞行器
-        if keys_pressed[pygame.K_RIGHT]:
-            self._can_right = True
-        else:
-            self._can_right = False
-        if keys_pressed[pygame.K_LEFT]:
-            self._can_left = True
-        else:
-            self._can_left = False
-        if keys_pressed[pygame.K_UP]:
-            self._can_up = True
-        else:
-            self._can_up = False
-        if keys_pressed[pygame.K_DOWN]:
-            self._can_down = True
-        else:
-            self._can_down = False
-        #游戏是否暂停
+
+        # 游戏是否暂停
         if keys_pressed[pygame.K_p]:
             if not self._pause_playing:
                 self._pause_playing = True
             else:
                 self._pause_playing = False
 
-        # if keys_pressed[pygame.K_2]:
-        #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-        #                                size=self._size_big1)
-        # if keys_pressed[pygame.K_3]:
-        #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-        #                                size=self._size_big2)
-        if keys_pressed[pygame.K_1]:
-            if not self._is_original:
-                self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-                                           size=self._size_small)
-                self._is_original = True
-            else:
-                self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-                                           size=self._size_original)
-                self._is_original = False
-
-        #对子弹
-        if keys_pressed[pygame.K_SPACE]:
-            new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
-            self._bullets.add(new_bullet)#将新子弹加入编组进行管理
-        #如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有 测试用
-        # if len(self._viruses) < self._NumOfViruses:
-        #     virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
-        #     new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
-        #     self._viruses.add(new_virus)
-        #退出键
+        # 退出键
         if keys_pressed[pygame.K_q]:
             sys.exit()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+        if self._start_playing and not self._pause_playing:
+            # 对飞行器
+            if keys_pressed[pygame.K_RIGHT]:
+                self._can_right = True
+            else:
+                self._can_right = False
+            if keys_pressed[pygame.K_LEFT]:
+                self._can_left = True
+            else:
+                self._can_left = False
+            if keys_pressed[pygame.K_UP]:
+                self._can_up = True
+            else:
+                self._can_up = False
+            if keys_pressed[pygame.K_DOWN]:
+                self._can_down = True
+            else:
+                self._can_down = False
+
+
+            # if keys_pressed[pygame.K_2]:
+            #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+            #                                size=self._size_big1)
+            # if keys_pressed[pygame.K_3]:
+            #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+            #                                size=self._size_big2)
+            if keys_pressed[pygame.K_1]:
+                if not self._is_original:
+                    self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                               size=self._size_small)
+                    self._is_original = True
+                else:
+                    self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                               size=self._size_original)
+                    self._is_original = False
+
+            # 对子弹
+            if keys_pressed[pygame.K_SPACE]:
+                new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
+                self._bullets.add(new_bullet)  # 将新子弹加入编组进行管理
+            # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有 测试用
+            # if len(self._viruses) < self._NumOfViruses:
+            #     virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+            #     new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
+            #     self._viruses.add(new_virus)
 
     def _update_scene(self):
         """
@@ -166,17 +171,17 @@ class Main:
         """
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
-
-        if self._start_playing:
-            # 测试病毒类
-            # virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
-            # self._virus = Virus(screen=self._screen, virus_image=virus_image_path,
-            #                     pos_x=int(self._screen.get_rect().centerx))
-            # self._virus.blit_virus()
+        # 测试病毒类
+        # virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+        # self._virus = Virus(screen=self._screen, virus_image=virus_image_path,
+        #                     pos_x=int(self._screen.get_rect().centerx))
+        # self._virus.blit_virus()
+        if self._start_playing and not self._pause_playing:
             # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
             if len(self._viruses) <= self._NumOfViruses:  # 增加病毒数量计数，到达一定数量之后就投入新病毒
                 # print(len(self._viruses))
                 virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+                # 打印病毒个数，打死的不算在内
                 print(len(self._viruses))
                 try:
                     new_virus = Virus(screen=self._screen, virus_image=virus_image_path,
@@ -188,6 +193,7 @@ class Main:
             self._viruses.update()
             # 更新所有子弹
             self._bullets.update()
+            # 飞船位置更新和边界限制
             if self._can_up and self._aircraft.rect.top >= self._aircraft.RectBorderOfScreen.top:
                 if self._aircraft.rect.top - self._aircraft.RectBorderOfScreen.top <= self._aircraft.v:
                     self._aircraft.rect.top = self._aircraft.RectBorderOfScreen.top
@@ -272,10 +278,11 @@ class Main:
                                                   (self._aircraft.rect.top, self._aircraft.rect.bottom)):
                         self._judge_state_of_aircraft()
                         # sys.exit()  # 改成飞行器变大
-            #
-            if not self._pause_playing:
-                pygame.display.flip()
-            # pygame.display.update()
+
+                #
+                # pygame.display.flip()
+                # pygame.display.update()
+
 
     def _boundary(self):
         """
@@ -287,7 +294,7 @@ class Main:
         self._line.centerx = self._screen.get_rect().right - Settings().boundary_pos
         self._line.centery = self._screen.get_rect().centery
         pygame.draw.rect(self._screen, (0)*3, self._line)
-        pygame.display.flip()
+        # pygame.display.flip()
 
     def main(self):
         pygame.init()
@@ -303,17 +310,25 @@ class Main:
         #
         while True:
             # 测试用
-            # for event in pygame.event.get():
-            #     if event.type == pygame.QUIT:
-            #         sys.exit()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
             # 添加游戏边线
             self._boundary()
-            # 绘制开始按钮
-            if not self._start_playing:
-                self._button.draw_button()
-                pygame.display.flip()
+            # self._button.draw_button()
+            # pygame.display.flip()
+            # 绘制开始按钮，在游戏未开始或者暂停时也依然在屏幕上呈现
+            # if not self._start_playing:
+            self._button.draw_button()
+            pygame.display.flip()
+            #游戏开始且未按下暂停键
+            # if self._start_playing and not self._pause_playing:
             self._event_checking()
             self._update_scene()
+
+
+
 
 if __name__ == '__main__':
     Main().main()
