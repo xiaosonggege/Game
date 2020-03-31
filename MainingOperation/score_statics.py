@@ -17,6 +17,29 @@ class Score:
         self._virus1_score = Score.score_per_virus['level1'] * virus1_num
         self._virus2_score = Score.score_per_virus['level2'] * virus2_num
         self._virus3_score = Score.score_per_virus['level3'] * virus3_num
+        self._db = pymysql.connect('localhost', 'root', 'xiaosonggege1025', 'Game')
+        self._cursor = self._db.cursor()
+
+    def _create(self):
+        self._cursor.execute('show tables')
+        if self._name not in (table[0] for table in self._cursor.fetchall()):
+            #默认开启手动提交
+            sql1 = """
+                  create table if not exists %s (
+                  name varchar(20) primary key not null ,
+                  virus1 int,
+                  virus2 int,
+                  virus3 int
+                  )
+                  """ % self._name
+            self._cursor.execute(sql1)
+        sql2 = 'insert into zhangsan values (%s, %s, %s, %s)' % \
+                (self._name, self._virus1_score, self._virus2_score, self._virus3_score)
+        self._cursor.execute(sql2)
+        #加入统计信息：最高分前几个，排序等等
+        self._db.commit()
+
+
 
 
 
