@@ -22,8 +22,10 @@ class SettingsProperty:
 
 class Settings:
     def __init__(self, background_path=None):
+        #分界线位置
+        self._boundary_pos = 200
         #screen
-        self._screen_width = 1200+200
+        self._screen_width = 1200+self._boundary_pos
         self._screen_height = 800
         self._bg_color = (230, 230, 230) if not background_path else None
         self._background = pygame.image.load(background_path) if background_path is not None else None
@@ -34,6 +36,7 @@ class Settings:
         #virus
         self._virus_size = 50, 50
         self._virus_speed = 1.5
+    boundary_pos = SettingsProperty('boundary_pos')
     screen_width = SettingsProperty('screen_width')
     screen_height = SettingsProperty('screen_height')
     bg_color = SettingsProperty('bg_color')

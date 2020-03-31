@@ -38,7 +38,7 @@ class Virus(Sprite):
         self._dead = False #标志着病毒的死亡
         #确定病毒位置
         self.rect.bottom = 30
-        self.rect.x = pos_x
+        self.rect.right = pos_x
 
     ImageOfVirus = VirusProperty('_ImageOfVirus')
     virus_speed = VirusProperty('_virus_speed')
@@ -65,13 +65,13 @@ class Virus(Sprite):
                 else:
                     self.rect.left = 0
             else:
-                self.rect += self._virus_speed
+                self.rect.left += self._virus_speed
         else:
-            if self.rect.right <= self._screen.get_rect().right:
-                if self.rect.right + self._virus_speed < self._screen.get_rect().right:
+            if self.rect.right <= self._screen.get_rect().right - Settings().boundary_pos:
+                if self.rect.right + self._virus_speed < self._screen.get_rect().right - Settings().boundary_pos:
                     self.rect.right += self._virus_speed
                 else:
-                    self.rect.right = self._screen.get_rect().right
+                    self.rect.right = self._screen.get_rect().right - Settings().boundary_pos
             else:
                 self.rect.right -= self._virus_speed
         self.rect.y += self._virus_speed

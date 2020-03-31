@@ -9,7 +9,7 @@
 @time: 2020/3/28 6:13 下午
 '''
 import pygame
-
+from MainingOperation.basic_settings import Settings
 class Button:
     def __init__(self, screen:pygame.Surface, message:str):
         self._screen = screen
@@ -22,7 +22,8 @@ class Button:
         self._font = pygame.font.SysFont(name=None, size=48) #从系统字体库创建一个 Font 对象
         #将按钮放在屏幕中央
         self.rect = pygame.Rect(0, 0, self._width, self._height)
-        self.rect.center = self._RectOfScreen.center
+        self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
+        self.rect.centery = self._height + 50
         #文本Surface
         self._prep_msg = self._msg_set(msg=message)
 
@@ -30,7 +31,7 @@ class Button:
         #创建一个新的 Surface 对象，并在上边渲染指定的文本。
         self._msg_image = self._font.render(msg, True, self._text_color, self._button_color)
         self._msg_image_rect = self._msg_image.get_rect()
-        self._msg_image_rect.center = self._RectOfScreen.center
+        self._msg_image_rect.center = self.rect.center
 
     def draw_button(self):
         #绘制一个用颜色填充的按钮，再绘制文本

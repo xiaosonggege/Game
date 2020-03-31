@@ -9,6 +9,7 @@
 @time: 2020/3/19 5:54 下午
 '''
 import pygame
+from MainingOperation.basic_settings import Settings
 class AircraftProperty:
     def __init__(self, name):
         self._name = '_' + name
@@ -18,12 +19,14 @@ class AircraftProperty:
         if self._name == '_ImageOfAircraft':
             instance.__dict__[self._name] = pygame.image.load(value) if type(value) == str else value
             instance.__dict__['_rect'] = instance.__dict__[self._name].get_rect()
-            instance.__dict__['_rect'].centerx = instance.__dict__['_screen'].get_rect().centerx
+            instance.__dict__['_rect'].centerx = int(instance.__dict__['_screen'].get_rect().centerx / 2 \
+                                                 - Settings().boundary_pos / 2)
             instance.__dict__['_rect'].bottom = instance.__dict__['_screen'].get_rect().bottom
         elif self._name == '_screen':
             instance.__dict__[self._name] = value
             instance.__dict__['_RectBorderOfScreen'] = instance.__dict__[self._name].get_rect()
-            instance.__dict__['_rect'].centerx = instance.__dict__['_RectBorderOfScreen'].centerx
+            instance.__dict__['_rect'].centerx = int(instance.__dict__['_RectBorderOfScreen'].centerx / 2 \
+                                                     - Settings().boundary_pos / 2)
             instance.__dict__['_rect'].bottom = instance.__dict__['_RectBorderOfScreen'].bottom
         elif self._name == '_rect':
             instance.__dict__[self._name].centerx = value[0]

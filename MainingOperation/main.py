@@ -19,28 +19,37 @@ from Components.virus import Virus
 import numpy as np
 
 def PositionInit(low:int, high:int, count:int):
+    """
+    病毒数量生成器
+    :param low: 下边界
+    :param high: 上边界
+    :param count: 病毒最大数量
+    :return:
+    """
     set_of_posx = np.random.randint(low=low, high=high, size=count)
     for i in set_of_posx:
         yield i
 
 class Main:
-    level_virus = {'easy':100, 'middle':300, 'defficult':500}
+    level_virus = {'easy':1000, 'middle':300, 'defficult':500}
     #判断两条边是否有交集 返回True代表没有重叠
     have_intersection = lambda lineone, linetwo: lineone[-1] < linetwo[0] or lineone[0] > linetwo[-1]
     def __init__(self):
-        self._screen = pygame.display.set_mode(size=(1200, 800))
+        self._screen = pygame.display.set_mode(size=(Settings().screen_width, Settings().screen_height))
         self._aircraft = Aircraft(self._screen)
         self._bullets = Group() #创建存储子弹的编组
         self._viruses = Group() #创建存储病毒的编组
         self._is_win = False #标志游戏输赢
         #游戏是否开始
         self._start_playing = False
+        #游戏是否暂停，游戏暂停后，所有surface都无法更新
+        self._pause_playing = False
 
         #游戏等级
         self._NumOfViruses = Main.level_virus['easy'] #改
         #病毒初始位置生成器
         self._init_posxes = PositionInit(low=self._screen.get_rect().left,
-                                         high=self._screen.get_rect().right,
+                                         high=self._screen.get_rect().right - Settings().boundary_pos,
                                          count=self._NumOfViruses)
         #原尺寸
         self._size_original = (self._aircraft.rect.width, self._aircraft.rect.height)
@@ -111,6 +120,13 @@ class Main:
             self._can_down = True
         else:
             self._can_down = False
+        #游戏是否暂停
+        if keys_pressed[pygame.K_p]:
+            if not self._pause_playing:
+                self._pause_playing = True
+            else:
+                self._pause_playing = False
+
         # if keys_pressed[pygame.K_2]:
         #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
         #                                size=self._size_big1)
@@ -199,14 +215,16 @@ class Main:
             elif self._aircraft.rect.left < self._aircraft.RectBorderOfScreen.left:  # 同上
                 self._aircraft.rect.left = self._aircraft.RectBorderOfScreen.left
 
-            if self._can_right and self._aircraft.rect.right <= self._aircraft.RectBorderOfScreen.right:
-                if self._aircraft.RectBorderOfScreen.right - self._aircraft.rect.right <= self._aircraft.v:
-                    self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right
+            if self._can_right and self._aircraft.rect.right <= self._aircraft.RectBorderOfScreen.right \
+                    - Settings().boundary_pos:
+                if self._aircraft.RectBorderOfScreen.right - Settings().boundary_pos \
+                        - self._aircraft.rect.right <= self._aircraft.v:
+                    self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right - Settings().boundary_pos
                 else:
                     pre_pos = float(self._aircraft.rect.centerx)
                     self._aircraft.rect.centerx = pre_pos + self._aircraft.v
-            elif self._aircraft.rect.right > self._aircraft.RectBorderOfScreen.right:
-                self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right
+            elif self._aircraft.rect.right > self._aircraft.RectBorderOfScreen.right - Settings().boundary_pos:
+                self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right - Settings().boundary_pos
 
             self._aircraft.blitAircraft()
             # 绘制所有病毒
@@ -255,17 +273,29 @@ class Main:
                         self._judge_state_of_aircraft()
                         # sys.exit()  # 改成飞行器变大
             #
-            pygame.display.flip()
+            if not self._pause_playing:
+                pygame.display.flip()
             # pygame.display.update()
 
+    def _boundary(self):
+        """
+        在screen上绘制分界线，分界线右边是按钮
+        :return:
+        """
+        line_size = 5, Settings().screen_height
+        self._line = pygame.rect.Rect(0, 0, *line_size)
+        self._line.centerx = self._screen.get_rect().right - Settings().boundary_pos
+        self._line.centery = self._screen.get_rect().centery
+        pygame.draw.rect(self._screen, (0)*3, self._line)
+        pygame.display.flip()
 
     def main(self):
         pygame.init()
         pygame.display.set_caption("Alien Invasion")
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
-        #添加游戏边线
-
+        # 添加游戏边线
+        self._boundary()
         # 按钮
         self._button = Button(screen=self._screen, message='play')
         #
@@ -276,10 +306,12 @@ class Main:
             # for event in pygame.event.get():
             #     if event.type == pygame.QUIT:
             #         sys.exit()
+            # 添加游戏边线
+            self._boundary()
             # 绘制开始按钮
             if not self._start_playing:
                 self._button.draw_button()
-            pygame.display.flip()
+                pygame.display.flip()
             self._event_checking()
             self._update_scene()
 
