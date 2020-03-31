@@ -232,13 +232,15 @@ class Main:
             elif self._aircraft.rect.right > self._aircraft.RectBorderOfScreen.right - Settings().boundary_pos:
                 self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right - Settings().boundary_pos
 
-            self._aircraft.blitAircraft()
-            # 绘制所有病毒
-            for virus in self._viruses.sprites():
-                virus.blit_virus()
-            # 在飞行器和病毒后面重绘所有子弹
-            for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
-                bullet.draw_Bullet()
+            # #飞行器，子弹和病毒应该时刻在屏幕上绘制（已放在函数体最后部分了，此处暂且注释掉）
+            # self._aircraft.blitAircraft()
+            # # 绘制所有病毒
+            # for virus in self._viruses.sprites():
+            #     virus.blit_virus()
+            # # 在飞行器和病毒后面重绘所有子弹
+            # for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
+            #     bullet.draw_Bullet()
+            # #
             # 击中病毒的子弹以及被击中的病毒
             collisions = pygame.sprite.groupcollide(
                 groupa=self._bullets, groupb=self._viruses, dokilla=True, dokillb=True)  # dokill是碰撞后是否立即删除
@@ -279,6 +281,17 @@ class Main:
                         self._judge_state_of_aircraft()
                         # sys.exit()  # 改成飞行器变大
 
+        # 飞行器，子弹和病毒应该时刻在屏幕上绘制
+        if self._start_playing:
+            self._aircraft.blitAircraft()
+            # 绘制所有病毒
+            for virus in self._viruses.sprites():
+                virus.blit_virus()
+            # 在飞行器和病毒后面重绘所有子弹
+            for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
+                bullet.draw_Bullet()
+
+        #
                 #
                 # pygame.display.flip()
                 # pygame.display.update()
