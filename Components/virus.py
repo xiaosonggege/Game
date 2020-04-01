@@ -39,10 +39,13 @@ class Virus(Sprite):
         #确定病毒位置
         self.rect.bottom = 30
         self.rect.right = pos_x
+        #消灭病毒后的得分
+        self._score = 1
 
     ImageOfVirus = VirusProperty('_ImageOfVirus')
     virus_speed = VirusProperty('_virus_speed')
     dead = VirusProperty('_dead')
+    score = VirusProperty('_score')
 
     def blit_virus(self):
         """
@@ -84,11 +87,13 @@ class VirusStyle2(Virus):
         super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
 
 #
-# class VirusStyle3(Virus):
+class VirusStyle3(Virus):
+    pass
 #     def __init__(self):
 #         super().__init__()
 #
-# class BigVirus(Virus):
+class BigVirus(Virus):
+    pass
 #     def __init__(self):
 #         super().__init__()
 
@@ -96,4 +101,10 @@ class VirusStyle2(Virus):
 
 
 if __name__ == '__main__':
-    pass
+    virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+    screen = pygame.display.set_mode(size=(1200, 800))
+    v1 = Virus(screen=screen, virus_image=virus_image_path,
+                      pos_x=0)
+    v2 = VirusStyle2(screen=screen, virus_image=virus_image_path,
+                      pos_x=0)
+    print(type(v1) == VirusStyle2, type(v2) == Virus)

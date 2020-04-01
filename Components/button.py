@@ -10,12 +10,12 @@
 '''
 import pygame
 from MainingOperation.basic_settings import Settings
-class Button:
-    def __init__(self, screen:pygame.Surface, message:str):
+class StartButton:
+    def __init__(self, screen:pygame.Surface, message:str, width:int=100, height:int=50):
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()
         #设置按钮
-        self._width, self._height = 100, 50
+        self._width, self._height = width, height
         self._button_color = (255, 0, 0)
         self._text_color = (255, 255, 255)
         #None为使用pygame的默认字体
@@ -37,6 +37,15 @@ class Button:
         #绘制一个用颜色填充的按钮，再绘制文本
         self._screen.fill(color=self._button_color, rect=self.rect) #按钮着色
         self._screen.blit(self._msg_image, self._msg_image_rect) #按钮绘制
+
+class LevelButton(StartButton):
+    def __init__(self, screen:pygame.Surface, message:str, centerx:int, centery:int):
+        super().__init__(screen=screen, message=message, width=30, height=50)
+        self.rect.centerx = centerx
+        self.rect.centery = centery
+
+
+
 
 if __name__ == '__main__':
     pass

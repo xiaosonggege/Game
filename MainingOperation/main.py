@@ -15,7 +15,7 @@ from Components.aircraft import Aircraft
 from Components.bullet import Bullet
 from Components.button import Button
 from pygame.sprite import Group
-from Components.virus import Virus
+from Components.virus import Virus, VirusStyle2, VirusStyle3
 import numpy as np
 
 def PositionInit(low:int, high:int, count:int):
@@ -31,10 +31,17 @@ def PositionInit(low:int, high:int, count:int):
         yield i
 
 class Main:
-    level_virus = {'easy':1000, 'middle':300, 'defficult':500}
+    level_virus = {'easy':100, 'middle':300, 'defficult':500}
     #判断两条边是否有交集 返回True代表没有重叠
     have_intersection = lambda lineone, linetwo: lineone[-1] < linetwo[0] or lineone[0] > linetwo[-1]
     def __init__(self):
+        #总得分
+        self._total_score = 0
+        #每种病毒被消灭计数
+        self._virus1_num = 0
+        self._virus2_num = 0
+        self._virus3_num = 0
+        #
         self._screen = pygame.display.set_mode(size=(Settings().screen_width, Settings().screen_height))
         self._aircraft = Aircraft(self._screen)
         self._bullets = Group() #创建存储子弹的编组
@@ -114,9 +121,13 @@ class Main:
 
         # 退出键
         if keys_pressed[pygame.K_q]:
+            print('消灭病毒数量为:', self._total_score)
+            print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
             sys.exit()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                print('消灭病毒数量为:', self._total_score)
+                print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
                 sys.exit()
         if self._start_playing and not self._pause_playing:
             # 对飞行器
@@ -188,6 +199,8 @@ class Main:
                                       pos_x=next(self._init_posxes))  # 改
                     self._viruses.add(new_virus)
                 except StopIteration:
+                    print('消灭病毒数量为:', self._total_score)
+                    print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
                     sys.exit()
             # 更新所有病毒
             self._viruses.update()
@@ -242,8 +255,21 @@ class Main:
             #     bullet.draw_Bullet()
             # #
             # 击中病毒的子弹以及被击中的病毒
-            collisions = pygame.sprite.groupcollide(
+            collisions = pygame.sprite.groupcollide( #collisions返回当前时刻的子弹和病毒碰撞字典
                 groupa=self._bullets, groupb=self._viruses, dokilla=True, dokillb=True)  # dokill是碰撞后是否立即删除
+            #如果有子弹和病毒的碰撞存在
+            if len(collisions.values()) > 0:
+                for group_virus in list(collisions.values()):
+                    for per_virus in group_virus:
+                        per_virus.dead = True
+                        self._total_score += per_virus.score
+                        if type(per_virus) == Virus:
+                            self._virus1_num += 1
+                        elif type(per_virus) == VirusStyle2:
+                            self._virus2_num += 1
+                        else:
+                            self._virus3_num += 1
+                # print(list(collisions.values())[0][0].dead)
             # 删除消失的子弹
             for bullet in self._bullets.sprites():
                 if bullet.rect_.bottom < 0:
@@ -251,7 +277,7 @@ class Main:
 
             # 删除被击中且被达到击毙条件或到达屏幕底端的病毒
             for virus in self._viruses.sprites():
-                if virus.dead or virus.rect.bottom == self._screen.get_rect().bottom:
+                if virus.rect.bottom == self._screen.get_rect().bottom:
                     self._viruses.remove(virus)
             #
             # 判断飞行器是否触碰到病毒,即飞行器变大
@@ -325,6 +351,8 @@ class Main:
             # 测试用
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    print('消灭病毒数量为:', self._total_score)
+                    print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
                     sys.exit()
 
             # 添加游戏边线
@@ -339,7 +367,6 @@ class Main:
             # if self._start_playing and not self._pause_playing:
             self._event_checking()
             self._update_scene()
-
 
 
 
