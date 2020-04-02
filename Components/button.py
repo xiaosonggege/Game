@@ -47,11 +47,14 @@ class StartButton:
 
 class LevelButton(StartButton):
     def __init__(self, screen:pygame.Surface, message:str):
-        super().__init__(screen=screen, message=message, width=30, height=50)
+        super().__init__(screen=screen, message=message, width=100, height=50)
         self._width = int(super().width_height[0] / 5)
         self._height = super().width_height[-1]
-        self.rect.centerx = super().rect.left + int(self._width) + (int(message)-1) * 2 * self._width # 均匀摆放等级按钮
-        self.rect.centery = super().rect.centery + 2 * super().width_height[-1]
+        # 均匀摆放等级按钮
+        self.rect = pygame.Rect(0, 0, self._width, self._height)
+        self.rect.centerx = int(self._RectOfScreen.right + Settings().boundary_pos * (int(message) * 0.25 - 1)) # (int(message)-1) * 2 * self._width
+        self.rect.centery = self._height + 130
+        self._prep_msg = super()._msg_set(msg=message)
         self._is_pressed = False
 
     @property

@@ -16,6 +16,7 @@ from Components.bullet import Bullet
 from Components.button import StartButton, LevelButton
 from pygame.sprite import Group
 from Components.virus import Virus, VirusStyle2, VirusStyle3
+from MainingOperation.score_statics import Score
 import numpy as np
 
 def PositionInit(low:int, high:int, count:int):
@@ -53,11 +54,11 @@ class Main:
         self._pause_playing = False
 
         #游戏等级
-        self._NumOfViruses = Main.level_virus['easy'] #改
-        #病毒初始位置生成器
-        self._init_posxes = PositionInit(low=self._screen.get_rect().left,
-                                         high=self._screen.get_rect().right - Settings().boundary_pos,
-                                         count=self._NumOfViruses)
+        # self._NumOfViruses = Main.level_virus['easy'] #改
+        # #病毒初始位置生成器
+        # self._init_posxes = PositionInit(low=self._screen.get_rect().left,
+        #                                  high=self._screen.get_rect().right - Settings().boundary_pos,
+        #                                  count=self._NumOfViruses) #
         #原尺寸
         self._size_original = (self._aircraft.rect.width, self._aircraft.rect.height)
         #缩小尺寸
@@ -117,7 +118,7 @@ class Main:
                 self._level_button2.pressed = True
 
             elif mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._level_button3):
-                self._NumOfViruses = Main.level_virus['difficult']
+                self._NumOfViruses = Main.level_virus['defficult']
                 self._level_button3.pressed = True
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
@@ -207,6 +208,10 @@ class Main:
                 # 打印病毒个数，打死的不算在内
                 print(len(self._viruses))
                 try:
+                    # 病毒初始位置生成器
+                    self._init_posxes = PositionInit(low=self._screen.get_rect().left,
+                                                     high=self._screen.get_rect().right - Settings().boundary_pos,
+                                                     count=self._NumOfViruses)  #
                     new_virus = Virus(screen=self._screen, virus_image=virus_image_path,
                                       pos_x=next(self._init_posxes))  # 改
                     self._viruses.add(new_virus)
@@ -385,7 +390,6 @@ class Main:
             # if self._start_playing and not self._pause_playing:
             self._event_checking()
             self._update_scene()
-
 
 
 if __name__ == '__main__':
