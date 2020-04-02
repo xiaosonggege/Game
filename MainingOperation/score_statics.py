@@ -38,14 +38,14 @@ class Score:
             try:
                 # 默认开启手动提交
                 sql1 = """
-                                  create table if not exists %s (
-                                  name varchar(20) primary key not null ,
-                                  virus1 int,
-                                  virus2 int,
-                                  virus3 int,
-                                  score int 
-                                  )
-                                  """ % self._name
+                    create table if not exists %s (
+                    name varchar(20) primary key not null ,
+                    virus1 int,
+                    virus2 int,
+                    virus3 int,
+                    score int 
+                    )
+                    """ % self._name
                 self._cursor.execute(sql1)
             except:
                 print('建表有问题')

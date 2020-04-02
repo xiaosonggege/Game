@@ -13,7 +13,7 @@ import sys
 from MainingOperation.basic_settings import Settings
 from Components.aircraft import Aircraft
 from Components.bullet import Bullet
-from Components.button import Button
+from Components.button import StartButton, LevelButton
 from pygame.sprite import Group
 from Components.virus import Virus, VirusStyle2, VirusStyle3
 import numpy as np
@@ -105,9 +105,22 @@ class Main:
             station4 = mouse_y <= button.rect.bottom
             return station1 and station2 and station3 and station4
 
+        #鼠标位置定位
         mouse_pressed = pygame.mouse.get_pressed()
+        #先选游戏等级再开始游戏
         if mouse_pressed[0] == 1:
             mouse_x, mouse_y = pygame.mouse.get_pos()
+            if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._level_button1):
+                self._NumOfViruses = Main.level_virus['easy']
+                self._level_button1.pressed = True
+            elif mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._level_button2):
+                self._NumOfViruses = Main.level_virus['middle']
+                self._level_button2.pressed = True
+
+            elif mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._level_button3):
+                self._NumOfViruses = Main.level_virus['difficult']
+                self._level_button3.pressed = True
+
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
         keys_pressed = pygame.key.get_pressed()
@@ -343,7 +356,10 @@ class Main:
         # 添加游戏边线
         self._boundary()
         # 按钮
-        self._button = Button(screen=self._screen, message='play')
+        self._button = StartButton(screen=self._screen, message='play')
+        self._level_button1 = LevelButton(screen=self._screen, message='1', centerx=None, centery=None)
+        self._level_button2 = LevelButton(screen=self._screen, message='2', centerx=None, centery=None)
+        self._level_button3 = LevelButton(screen=self._screen, message='3', centerx=None, centery=None)
         #
         self._aircraft.v = 30
         #
@@ -362,6 +378,9 @@ class Main:
             # 绘制开始按钮，在游戏未开始或者暂停时也依然在屏幕上呈现
             # if not self._start_playing:
             self._button.draw_button()
+            self._level_button1.draw_button()
+            self._level_button2.draw_button()
+            self._level_button3.draw_button()
             pygame.display.flip()
             #游戏开始且未按下暂停键
             # if self._start_playing and not self._pause_playing:

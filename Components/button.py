@@ -43,8 +43,19 @@ class LevelButton(StartButton):
         super().__init__(screen=screen, message=message, width=30, height=50)
         self.rect.centerx = centerx
         self.rect.centery = centery
+        self._is_pressed = False
 
+    @property
+    def pressed(self):
+        return self._is_pressed
+    @pressed.setter
+    def pressed(self, value:bool=True):
+        self._is_pressed = True
 
+    def draw_button(self):
+        self._screen.fill(color=self._button_color, rect=self.rect) #按钮着色
+        if not self._is_pressed: # 按钮按下后文本小时
+            self._screen.blit(self._msg_image, self._msg_image_rect)
 
 
 if __name__ == '__main__':
