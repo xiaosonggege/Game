@@ -96,7 +96,6 @@ class Main:
         事件队列检查
         :return: None
         """
-
         #判断光标是否在按钮区域中
         def mouse_in_button_region (mouse_x, mouse_y, button):
             station1 = mouse_x >= button.rect.left
@@ -357,9 +356,9 @@ class Main:
         self._boundary()
         # 按钮
         self._button = StartButton(screen=self._screen, message='play')
-        self._level_button1 = LevelButton(screen=self._screen, message='1', centerx=None, centery=None)
-        self._level_button2 = LevelButton(screen=self._screen, message='2', centerx=None, centery=None)
-        self._level_button3 = LevelButton(screen=self._screen, message='3', centerx=None, centery=None)
+        self._level_button1 = LevelButton(screen=self._screen, message='1')
+        self._level_button2 = LevelButton(screen=self._screen, message='2')
+        self._level_button3 = LevelButton(screen=self._screen, message='3')
         #
         self._aircraft.v = 30
         #

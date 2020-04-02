@@ -27,6 +27,13 @@ class StartButton:
         #文本Surface
         self._prep_msg = self._msg_set(msg=message)
 
+    @property
+    def width_height(self):
+        return self._width, self._height
+    @width_height.setter
+    def width_height(self, value:tuple):
+        self._width, self._height = value
+
     def _msg_set(self, msg:str):
         #创建一个新的 Surface 对象，并在上边渲染指定的文本。
         self._msg_image = self._font.render(msg, True, self._text_color, self._button_color)
@@ -39,10 +46,12 @@ class StartButton:
         self._screen.blit(self._msg_image, self._msg_image_rect) #按钮绘制
 
 class LevelButton(StartButton):
-    def __init__(self, screen:pygame.Surface, message:str, centerx:int, centery:int):
+    def __init__(self, screen:pygame.Surface, message:str):
         super().__init__(screen=screen, message=message, width=30, height=50)
-        self.rect.centerx = centerx
-        self.rect.centery = centery
+        self._width = int(super().width_height[0] / 5)
+        self._height = super().width_height[-1]
+        self.rect.centerx = super().rect.left + int(self._width) + (int(message)-1) * 2 * self._width # 均匀摆放等级按钮
+        self.rect.centery = super().rect.centery + 2 * super().width_height[-1]
         self._is_pressed = False
 
     @property
