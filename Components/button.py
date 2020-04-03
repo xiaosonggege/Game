@@ -71,6 +71,45 @@ class LevelButton(StartButton):
         if not self._is_pressed: # 按钮按下后文本小时
             self._screen.blit(self._msg_image, self._msg_image_rect)
 
+class Username:
+    def __init__(self, screen:pygame.Surface, message:str='username'):
+        self._username = message
+        self._screen = screen
+        self._RectOfScreen = self._screen.get_rect()
+        #设置输入框大小
+        self._width, self._height = 100, 50
+        self._background_color = (255, 0, 0)
+        self._text_color = (0, 255, 0)
+        #字体
+        self._font = pygame.font.SysFont(name=None, size=48)
+        self.rect = pygame.Rect(0, 0, self._width, self._height)
+        self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
+        self.rect.centery = 600
+        #文本surface
+        self._prep_msg = self._msg_set(msg=self._username)
+
+    def _msg_set(self, msg:str):
+        self._msg_image = self._font.render(msg, True, self._text_color, self._background_color)
+        self._msg_image_rect = self._msg_image.get_rect()
+        self._msg_image_rect.center = self.rect.center
+
+    def draw_button(self):
+        #绘制一个用颜色填充的按钮，再绘制文本
+        self._screen.fill(color=self._background_color, rect=self.rect) #按钮着色
+        # self._screen.blit(self._msg_image, self._msg_image_rect) #按钮绘制
+
+    def text_change(self, added_word:str=None, is_delete:bool=False):
+        """
+        时刻根据用户输入改变Surface中的文本信息
+        :return:
+        """
+        if is_delete:
+            self._username = self._username[:-1]
+            self._prep_msg = self._msg_set(msg=self._username)
+        elif added_word is not None:
+            self._username = self._username + added_word
+            self._msg_set(msg=self._username)
+
 
 if __name__ == '__main__':
     pass
