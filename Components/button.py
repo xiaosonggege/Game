@@ -110,6 +110,10 @@ class Username:
             self._username = self._username + added_word
             self._msg_set(msg=self._username)
 
+    def input_event_checking(self):
+        keys_pressed = pygame.key.get_pressed()
+
+
 
 if __name__ == '__main__':
     pass
