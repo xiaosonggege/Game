@@ -11,19 +11,21 @@
 import pygame
 from MainingOperation.basic_settings import Settings
 class StartButton:
-    def __init__(self, screen:pygame.Surface, message:str, width:int=100, height:int=50):
+    def __init__(self, screen:pygame.Surface, message:str,
+                 width:int=100, height:int=50, button_color=(255, 0, 0),
+                 text_color=(255, 255, 255), text_size=48, pos=None):
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()
         #设置按钮
         self._width, self._height = width, height
-        self._button_color = (255, 0, 0)
-        self._text_color = (255, 255, 255)
+        self._button_color = button_color
+        self._text_color = text_color
         #None为使用pygame的默认字体
-        self._font = pygame.font.SysFont(name=None, size=48) #从系统字体库创建一个 Font 对象
-        #将按钮放在屏幕中央
+        self._font = pygame.font.SysFont(name=None, size=text_size) #从系统字体库创建一个 Font 对象
+        #防止按钮
         self.rect = pygame.Rect(0, 0, self._width, self._height)
-        self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
-        self.rect.centery = self._height + 50
+        self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2 if pos is None else self._RectOfScreen.centerx
+        self.rect.centery = self._height + 50 if pos is None else self._RectOfScreen.centery
         #文本Surface
         self._prep_msg = self._msg_set(msg=message)
 

@@ -38,10 +38,10 @@ def ex1():
 def run_game():
     pygame.init()
     screen = pygame.display.set_mode(size=(1200, 800))
-    pygame.display.set_caption("Alien Invasion")
     bg_color = (100, 100, 100)
     screen.fill(bg_color)
     while True:
+        pygame.display.set_caption("Alien Invasion")
         mouse_x, mouse_y = pygame.mouse.get_pos()
         print(mouse_x, mouse_y)
         for event in pygame.event.get():

@@ -52,6 +52,8 @@ class Main:
         self._start_playing = False
         #游戏是否暂停，游戏暂停后，所有surface都无法更新
         self._pause_playing = False
+        #飞行器是否牺牲
+        self._is_game_over = False
 
         #游戏等级
         # self._NumOfViruses = Main.level_virus['easy'] #改
@@ -90,7 +92,9 @@ class Main:
             self._aircraft.blitAircraft()
             self._is_big_level1 = False
         elif not self._is_original and not self._is_big_level1:
-            sys.exit()
+            self._is_game_over = True
+            self._pause_playing = True
+            # sys.exit()
 
     def _event_checking(self):
         """
@@ -334,6 +338,9 @@ class Main:
             for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
                 bullet.draw_Bullet()
 
+        if self._is_game_over:
+            self._game_over_button.draw_button()
+
         #
                 #
                 # pygame.display.flip()
@@ -364,6 +371,9 @@ class Main:
         self._level_button1 = LevelButton(screen=self._screen, message='1')
         self._level_button2 = LevelButton(screen=self._screen, message='2')
         self._level_button3 = LevelButton(screen=self._screen, message='3')
+        self._game_over_button = StartButton(screen=self._screen, message='Game Over!',
+                                   width=600, height=400, button_color=(0, 255, 0), text_color=(255, 255, 255),
+                                   text_size=48, pos='center')
         #
         self._aircraft.v = 30
         #
