@@ -110,8 +110,66 @@ class Username:
             self._username = self._username + added_word
             self._msg_set(msg=self._username)
 
-    def input_event_checking(self):
-        keys_pressed = pygame.key.get_pressed()
+    def input_event_checking(self, keys_pressed):
+        """
+        检测按键，并根据按键输出
+        :param keys_pressed:
+        :return:
+        """
+        if keys_pressed[pygame.K_a]:
+            return 'a'
+        elif keys_pressed[pygame.K_b]:
+            return 'b'
+        elif keys_pressed[pygame.K_c]:
+            return 'c'
+        elif keys_pressed[pygame.K_d]:
+            return 'd'
+        elif keys_pressed[pygame.K_e]:
+            return 'e'
+        elif keys_pressed[pygame.K_f]:
+            return 'f'
+        elif keys_pressed[pygame.K_g]:
+            return 'g'
+        elif keys_pressed[pygame.K_h]:
+            return 'h'
+        elif keys_pressed[pygame.K_i]:
+            return 'i'
+        elif keys_pressed[pygame.K_j]:
+            return 'j'
+        elif keys_pressed[pygame.K_k]:
+            return 'k'
+        elif keys_pressed[pygame.K_l]:
+            return 'l'
+        elif keys_pressed[pygame.K_m]:
+            return 'm'
+        elif keys_pressed[pygame.K_n]:
+            return 'n'
+        elif keys_pressed[pygame.K_o]:
+            return 'o'
+        elif keys_pressed[pygame.K_p]:
+            return 'p'
+        elif keys_pressed[pygame.K_q]:
+            return 'q'
+        elif keys_pressed[pygame.K_r]:
+            return 'r'
+        elif keys_pressed[pygame.K_s]:
+            return 's'
+        elif keys_pressed[pygame.K_t]:
+            return 't'
+        elif keys_pressed[pygame.K_u]:
+            return 'u'
+        elif keys_pressed[pygame.K_v]:
+            return 'v'
+        elif keys_pressed[pygame.K_w]:
+            return 'w'
+        elif keys_pressed[pygame.K_x]:
+            return 'x'
+        elif keys_pressed[pygame.K_y]:
+            return 'y'
+        elif keys_pressed[pygame.K_z]:
+            return 'z'
+
+
 
 
 
