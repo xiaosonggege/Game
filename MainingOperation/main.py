@@ -117,13 +117,25 @@ class Main:
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._level_button1):
                 self._NumOfViruses = Main.level_virus['easy']
                 self._level_button1.pressed = True
+                # 病毒初始位置生成器
+                self._init_posxes = PositionInit(low=self._screen.get_rect().left,
+                                                 high=self._screen.get_rect().right - Settings().boundary_pos,
+                                                 count=self._NumOfViruses)  #
             elif mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._level_button2):
                 self._NumOfViruses = Main.level_virus['middle']
                 self._level_button2.pressed = True
+                # 病毒初始位置生成器
+                self._init_posxes = PositionInit(low=self._screen.get_rect().left,
+                                                 high=self._screen.get_rect().right - Settings().boundary_pos,
+                                                 count=self._NumOfViruses)  #
 
             elif mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._level_button3):
                 self._NumOfViruses = Main.level_virus['defficult']
                 self._level_button3.pressed = True
+                # 病毒初始位置生成器
+                self._init_posxes = PositionInit(low=self._screen.get_rect().left,
+                                                 high=self._screen.get_rect().right - Settings().boundary_pos,
+                                                 count=self._NumOfViruses)  #
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
@@ -146,6 +158,7 @@ class Main:
                 print('消灭病毒数量为:', self._total_score)
                 print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
                 sys.exit()
+
         if self._start_playing and not self._pause_playing:
             # 对飞行器
             if keys_pressed[pygame.K_RIGHT]:
@@ -212,10 +225,10 @@ class Main:
                 # 打印病毒个数，打死的不算在内
                 print(len(self._viruses))
                 try:
-                    # 病毒初始位置生成器
-                    self._init_posxes = PositionInit(low=self._screen.get_rect().left,
-                                                     high=self._screen.get_rect().right - Settings().boundary_pos,
-                                                     count=self._NumOfViruses)  #
+                    # # 病毒初始位置生成器
+                    # self._init_posxes = PositionInit(low=self._screen.get_rect().left,
+                    #                                  high=self._screen.get_rect().right - Settings().boundary_pos,
+                    #                                  count=self._NumOfViruses)  #
                     new_virus = Virus(screen=self._screen, virus_image=virus_image_path,
                                       pos_x=next(self._init_posxes))  # 改
                     self._viruses.add(new_virus)
@@ -288,7 +301,7 @@ class Main:
                             self._virus1_num += 1
                         elif type(per_virus) == VirusStyle2:
                             self._virus2_num += 1
-                        else:
+                        else: #加入病毒分裂的操作，在原位置向斜下方随机炸开
                             self._virus3_num += 1
                 # print(list(collisions.values())[0][0].dead)
             # 删除消失的子弹
@@ -340,6 +353,7 @@ class Main:
 
         if self._is_game_over:
             self._game_over_button.draw_button()
+            #加入重置操作
 
         #
                 #

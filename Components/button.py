@@ -68,7 +68,7 @@ class LevelButton(StartButton):
 
     def draw_button(self):
         self._screen.fill(color=self._button_color, rect=self.rect) #按钮着色
-        if not self._is_pressed: # 按钮按下后文本小时
+        if not self._is_pressed: # 按钮按下后文本消失
             self._screen.blit(self._msg_image, self._msg_image_rect)
 
 class Username:
@@ -96,7 +96,7 @@ class Username:
     def draw_button(self):
         #绘制一个用颜色填充的按钮，再绘制文本
         self._screen.fill(color=self._background_color, rect=self.rect) #按钮着色
-        # self._screen.blit(self._msg_image, self._msg_image_rect) #按钮绘制
+        self._screen.blit(self._msg_image, self._msg_image_rect) #按钮绘制
 
     def text_change(self, added_word:str=None, is_delete:bool=False):
         """
@@ -108,7 +108,7 @@ class Username:
             self._prep_msg = self._msg_set(msg=self._username)
         elif added_word is not None:
             self._username = self._username + added_word
-            self._msg_set(msg=self._username)
+            self._prep_msg = self._msg_set(msg=self._username)
 
     def input_event_checking(self, keys_pressed):
         """
@@ -168,6 +168,8 @@ class Username:
             return 'y'
         elif keys_pressed[pygame.K_z]:
             return 'z'
+        elif keys_pressed[pygame.K_DELETE]:
+            return 'delete'
 
 
 
