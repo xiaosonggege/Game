@@ -15,7 +15,7 @@ from Components.aircraft import Aircraft
 from Components.bullet import Bullet
 from Components.button import StartButton, LevelButton
 from pygame.sprite import Group
-from Components.virus import Virus, VirusStyle2
+from Components.virus import Virus, VirusStyle2, VirusStyle3
 from MainingOperation.score_statics import Score
 import numpy as np
 
@@ -233,19 +233,20 @@ class Main:
                     # self._init_posxes = PositionInit(low=self._screen.get_rect().left,
                     #                                  high=self._screen.get_rect().right - Settings().boundary_pos,
                     #                                  count=self._NumOfViruses)  #
-                    if self._virus_count <= int(self._NumOfViruses // 3):
+                    if self._virus_count <= int(self._NumOfViruses // 4):
                         new_virus = Virus(screen=self._screen, virus_image=virus_image_path1,
                                           pos_x=next(self._init_posxes))
-                    elif self._virus_count <= int(self._NumOfViruses // 3 * 2):
-                        new_virus = Virus(screen=self._screen, virus_image=virus_image_path2,
+                    elif self._virus_count <= int(self._NumOfViruses // 4 * 2):
+                        new_virus = VirusStyle2(screen=self._screen, virus_image=virus_image_path2,
                                           pos_x=next(self._init_posxes))
                         new_virus.virus_speed = 2 * new_virus.virus_speed #二号病毒的速度是普通病毒的两倍
                         new_virus.ImageOfVirus = virus_image_path2
                     else:
-                        new_virus = VirusStyle2(screen=self._screen, virus_image=virus_image_path3,
+                        new_virus = VirusStyle3(screen=self._screen, virus_image=virus_image_path3,
                                                 pos_x=next(self._init_posxes))
 
                     self._viruses.add(new_virus)
+                    self._virus_count += 1
                 except StopIteration:
                     print('消灭病毒数量为:', self._total_score)
                     print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
@@ -314,13 +315,15 @@ class Main:
                         if type(per_virus) == Virus:
                             self._virus1_num += 1
                         elif type(per_virus) == VirusStyle2:
-                            virus_sub1, virus_sub2 = VirusStyle2.spliting(
-                                screen=self._screen, virus_image=virus_image_path3, *per_virus.virus_rect), \
-                            VirusStyle2.spliting(screen=self._screen, virus_image=virus_image_path3, *per_virus.virus_rect)
-                            virus_sub1.rect.bottom = virus_sub2.rect.bottom = per_virus.virus_rect[0] + 5
-                            self._viruses.add(virus_sub1, virus_sub2)
                             self._virus2_num += 1
                         else: #加入病毒分裂的操作，在原位置向斜下方随机炸开
+                            virus_sub1, virus_sub2 = VirusStyle3.spliting(self._screen,
+                                                                          virus_image_path3, per_virus.virus_rect_right)
+                            # print(type(virus_sub1), type(virus_sub2))
+                            virus_sub1.rect.bottom = virus_sub2.rect.bottom = per_virus.virus_rect_bottom + 20
+                            virus_sub1.blit_virus()
+                            virus_sub2.blit_virus()
+                            self._viruses.add(virus_sub1, virus_sub2)
                             self._virus3_num += 1
                 # print(list(collisions.values())[0][0].dead)
             # 删除消失的子弹

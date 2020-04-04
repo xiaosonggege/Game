@@ -21,7 +21,7 @@ class VirusProperty:
     def __set__(self, instance, value):
         if self._name == '_ImageOfVirus':
             instance.__dict__[self._name] = pygame.transform.smoothscale(pygame.image.load(value),
-                                                                         map(lambda x:2*x, Settings().virus_size))
+                                                                         list(map(lambda x:2*x, Settings().virus_size)))
             x = instance.__dict__['rect'].x
             instance.__dict__['rect'] = instance.__dict__[self._name].get_rect()
             instance.__dict__['rect'].bottom = 0
@@ -44,8 +44,11 @@ class Virus(Sprite):
         self._score = 1
 
     @property
-    def virus_rect(self): #用户在病毒被击杀时及时确定病毒位置
-        return self.rect.bottom, self.rect.right
+    def virus_rect_bottom(self): #用户在病毒被击杀时及时确定病毒下边位置
+        return self.rect.bottom
+    @property
+    def virus_rect_right(self): #用户在病毒被击杀时及时确定病毒右边位置
+        return self.rect.right
 
     ImageOfVirus = VirusProperty('_ImageOfVirus')
     virus_speed = VirusProperty('_virus_speed')
@@ -86,13 +89,20 @@ class Virus(Sprite):
 
 class VirusStyle2(Virus):
     """
+    移动速度快，并且尺寸大的病毒
+    """
+    def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
+        super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
+
+class VirusStyle3(Virus):
+    """
     能分裂的病毒，每个病毒有0.5的概率分裂成两个病毒
     """
     def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
         super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
 
     @classmethod
-    def spliting(cls, screen:pygame.Surface, virus_image, *pos):
+    def spliting(cls, screen:pygame.Surface, virus_image, right_pos):
         """
         病毒分裂
         :param screen:
@@ -100,8 +110,8 @@ class VirusStyle2(Virus):
         :param pos:
         :return:
         """
-        return cls(screen=screen, virus_image=virus_image, pos_x=pos[-1]-5), \
-               cls(screen=screen, virus_image=virus_image, pos_x=pos[-1]+5)
+        return cls(screen=screen, virus_image=virus_image, pos_x=right_pos-20), \
+               cls(screen=screen, virus_image=virus_image, pos_x=right_pos+20)
 
 
 if __name__ == '__main__':
