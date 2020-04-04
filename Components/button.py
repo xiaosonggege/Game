@@ -72,7 +72,7 @@ class LevelButton(StartButton):
             self._screen.blit(self._msg_image, self._msg_image_rect)
 
 class Username:
-    def __init__(self, screen:pygame.Surface, message:str='username'):
+    def __init__(self, screen:pygame.Surface, message:str='usr'):
         self._username = message
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()
