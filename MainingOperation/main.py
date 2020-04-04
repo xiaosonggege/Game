@@ -13,7 +13,7 @@ import sys
 from MainingOperation.basic_settings import Settings
 from Components.aircraft import Aircraft
 from Components.bullet import Bullet
-from Components.button import StartButton, LevelButton
+from Components.button import StartButton, LevelButton, Username
 from pygame.sprite import Group
 from Components.virus import Virus, VirusStyle2, VirusStyle3
 from MainingOperation.score_statics import Score
@@ -140,6 +140,20 @@ class Main:
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
+            #用户输入名处，需要修改
+            if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._usr):
+                while True:
+                    content = self._usr.input_event_checking()
+                    if content == 'finish':
+                        # self._usr.draw_button()
+                        break
+                    elif content != 'delete':
+                        self._usr.text_change(added_word=content)
+                        # self._usr.draw_button()
+                    else:
+                        self._usr.text_change(is_delete=True)
+                        # self._usr.draw_button()
+            #
         keys_pressed = pygame.key.get_pressed()
 
         # 游戏是否暂停
@@ -410,6 +424,7 @@ class Main:
         self._game_over_button = StartButton(screen=self._screen, message='Game Over!',
                                    width=600, height=400, button_color=(0, 255, 0), text_color=(255, 255, 255),
                                    text_size=48, pos='center')
+        self._usr = Username(screen=self._screen)
         #
         self._aircraft.v = 30
         #
@@ -428,9 +443,11 @@ class Main:
             # 绘制开始按钮，在游戏未开始或者暂停时也依然在屏幕上呈现
             # if not self._start_playing:
             self._button.draw_button()
+            self._usr.draw_button() #用户名输入按钮
             self._level_button1.draw_button()
             self._level_button2.draw_button()
             self._level_button3.draw_button()
+            self._usr.draw_button()
             pygame.display.flip()
             #游戏开始且未按下暂停键
             # if self._start_playing and not self._pause_playing:

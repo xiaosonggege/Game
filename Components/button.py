@@ -72,7 +72,7 @@ class LevelButton(StartButton):
             self._screen.blit(self._msg_image, self._msg_image_rect)
 
 class Username:
-    def __init__(self, screen:pygame.Surface, message:str='usr'):
+    def __init__(self, screen:pygame.Surface, message:str='usr:'):
         self._username = message
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()
@@ -81,7 +81,7 @@ class Username:
         self._background_color = (255, 0, 0)
         self._text_color = (0, 255, 0)
         #字体
-        self._font = pygame.font.SysFont(name=None, size=48)
+        self._font = pygame.font.SysFont(name=None, size=10)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
         self.rect.centery = 600
@@ -110,12 +110,12 @@ class Username:
             self._username = self._username + added_word
             self._prep_msg = self._msg_set(msg=self._username)
 
-    def input_event_checking(self, keys_pressed):
+    def input_event_checking(self):
         """
         检测按键，并根据按键输出
-        :param keys_pressed:
         :return:
         """
+        keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_a]:
             return 'a'
         elif keys_pressed[pygame.K_b]:
@@ -170,6 +170,8 @@ class Username:
             return 'z'
         elif keys_pressed[pygame.K_DELETE]:
             return 'delete'
+        elif keys_pressed[pygame.K_RETURN]: #回车键
+            return 'finish'
 
 
 
