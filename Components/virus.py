@@ -20,7 +20,8 @@ class VirusProperty:
         return instance.__dict__[self._name]
     def __set__(self, instance, value):
         if self._name == '_ImageOfVirus':
-            instance.__dict__[self._name] = value
+            instance.__dict__[self._name] = pygame.transform.smoothscale(pygame.image.load(value),
+                                                                         map(lambda x:2*x, Settings().virus_size))
             x = instance.__dict__['rect'].x
             instance.__dict__['rect'] = instance.__dict__[self._name].get_rect()
             instance.__dict__['rect'].bottom = 0
@@ -41,6 +42,10 @@ class Virus(Sprite):
         self.rect.right = pos_x
         #消灭病毒后的得分
         self._score = 1
+
+    @property
+    def virus_rect(self): #用户在病毒被击杀时及时确定病毒位置
+        return self.rect.bottom, self.rect.right
 
     ImageOfVirus = VirusProperty('_ImageOfVirus')
     virus_speed = VirusProperty('_virus_speed')
@@ -86,18 +91,17 @@ class VirusStyle2(Virus):
     def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
         super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
 
-#
-class VirusStyle3(Virus):
-    pass
-#     def __init__(self):
-#         super().__init__()
-#
-class BigVirus(Virus):
-    pass
-#     def __init__(self):
-#         super().__init__()
-
-
+    @classmethod
+    def spliting(cls, screen:pygame.Surface, virus_image, *pos):
+        """
+        病毒分裂
+        :param screen:
+        :param virus_image:
+        :param pos:
+        :return:
+        """
+        return cls(screen=screen, virus_image=virus_image, pos_x=pos[-1]-5), \
+               cls(screen=screen, virus_image=virus_image, pos_x=pos[-1]+5)
 
 
 if __name__ == '__main__':

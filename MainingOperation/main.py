@@ -15,7 +15,7 @@ from Components.aircraft import Aircraft
 from Components.bullet import Bullet
 from Components.button import StartButton, LevelButton
 from pygame.sprite import Group
-from Components.virus import Virus, VirusStyle2, VirusStyle3
+from Components.virus import Virus, VirusStyle2
 from MainingOperation.score_statics import Score
 import numpy as np
 
@@ -57,6 +57,7 @@ class Main:
 
         #游戏等级
         # self._NumOfViruses = Main.level_virus['easy'] #改
+        self._virus_count = 0 #记录当前总共产生的病毒数量
         # #病毒初始位置生成器
         # self._init_posxes = PositionInit(low=self._screen.get_rect().left,
         #                                  high=self._screen.get_rect().right - Settings().boundary_pos,
@@ -210,6 +211,9 @@ class Main:
         更新屏幕中的场景
         :return: None
         """
+        virus_image_path1 = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+        virus_image_path2 = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒2.jpeg'
+        virus_image_path3 = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒3.jpeg'
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
         # 测试病毒类
@@ -219,9 +223,9 @@ class Main:
         # self._virus.blit_virus()
         if self._start_playing and not self._pause_playing:
             # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
-            if len(self._viruses) <= self._NumOfViruses:  # 增加病毒数量计数，到达一定数量之后就投入新病毒
+            if self._virus_count <= self._NumOfViruses:  # 增加病毒数量计数，到达一定数量之后就投入新病毒
                 # print(len(self._viruses))
-                virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+
                 # 打印病毒个数，打死的不算在内
                 print(len(self._viruses))
                 try:
@@ -229,8 +233,18 @@ class Main:
                     # self._init_posxes = PositionInit(low=self._screen.get_rect().left,
                     #                                  high=self._screen.get_rect().right - Settings().boundary_pos,
                     #                                  count=self._NumOfViruses)  #
-                    new_virus = Virus(screen=self._screen, virus_image=virus_image_path,
-                                      pos_x=next(self._init_posxes))  # 改
+                    if self._virus_count <= int(self._NumOfViruses // 3):
+                        new_virus = Virus(screen=self._screen, virus_image=virus_image_path1,
+                                          pos_x=next(self._init_posxes))
+                    elif self._virus_count <= int(self._NumOfViruses // 3 * 2):
+                        new_virus = Virus(screen=self._screen, virus_image=virus_image_path2,
+                                          pos_x=next(self._init_posxes))
+                        new_virus.virus_speed = 2 * new_virus.virus_speed #二号病毒的速度是普通病毒的两倍
+                        new_virus.ImageOfVirus = virus_image_path2
+                    else:
+                        new_virus = VirusStyle2(screen=self._screen, virus_image=virus_image_path3,
+                                                pos_x=next(self._init_posxes))
+
                     self._viruses.add(new_virus)
                 except StopIteration:
                     print('消灭病毒数量为:', self._total_score)
@@ -300,6 +314,11 @@ class Main:
                         if type(per_virus) == Virus:
                             self._virus1_num += 1
                         elif type(per_virus) == VirusStyle2:
+                            virus_sub1, virus_sub2 = VirusStyle2.spliting(
+                                screen=self._screen, virus_image=virus_image_path3, *per_virus.virus_rect), \
+                            VirusStyle2.spliting(screen=self._screen, virus_image=virus_image_path3, *per_virus.virus_rect)
+                            virus_sub1.rect.bottom = virus_sub2.rect.bottom = per_virus.virus_rect[0] + 5
+                            self._viruses.add(virus_sub1, virus_sub2)
                             self._virus2_num += 1
                         else: #加入病毒分裂的操作，在原位置向斜下方随机炸开
                             self._virus3_num += 1
