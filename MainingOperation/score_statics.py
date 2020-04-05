@@ -46,8 +46,11 @@ class Score:
                     index name (name)
                     )
                     """
-
-
+                self._cursor.execute(sql1)
+            except:
+                print('建立usr_info有问题')
+            else:
+                self._db.commit()
 
     def create_data(self):
         self._cursor.execute('show tables')
