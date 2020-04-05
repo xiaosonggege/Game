@@ -24,9 +24,6 @@ class Score:
         self._virus1 = virus1_num #* Score.score_per_virus['level1']
         self._virus2 = virus2_num #* Score.score_per_virus['level2']
         self._virus3 = virus3_num #* Score.score_per_virus['level3']
-        self._score = self._virus1 * Score.score_per_virus['level1'] + \
-            self._virus2 * Score.score_per_virus['level2'] + \
-            self._virus3 * Score.score_per_virus['level3']
         self._db = pymysql.connect('localhost', 'root', 'xiaosonggege1025', 'Game')
         self._cursor = self._db.cursor()
 
@@ -34,6 +31,23 @@ class Score:
     virus1 = ScoreProperty('virus1_score')
     virus2 = ScoreProperty('virus2_score')
     virus3 = ScoreProperty('virus3_score')
+
+    def _create_usrname_table(self):
+        self._cursor.execute('show tables')
+        if 'usr_info' not in (table[0] for table in self._cursor.fetchall()):
+            try:
+                #默认开启手动提交
+                sql1 = """
+                    create table if not exists usr_info (
+                    name varchar(20) primary key not null ,
+                    virus1_total int not null ,
+                    virus2_total int not null ,
+                    virus3_total int not null ,
+                    index name (name)
+                    )
+                    """
+
+
 
     def create_data(self):
         self._cursor.execute('show tables')
@@ -56,6 +70,10 @@ class Score:
 
 
     def update_table(self):
+        #计算总分
+        self._score = self._virus1 * Score.score_per_virus['level1'] + \
+                      self._virus2 * Score.score_per_virus['level2'] + \
+                      self._virus3 * Score.score_per_virus['level3']
         try:
             sql1 = 'insert into %s values (%s, %s, %s, %s)' % \
                    (self._name, self._virus1, self._virus2, self._virus3, self._score)
@@ -64,6 +82,7 @@ class Score:
             print('no pa1')
             sql2 = 'select count(*) from %s' % self._name
             self._cursor.execute(sql2)
+
             #如果成绩表中成绩多余10项，就删除最差成绩，使表中数据始终为10项
             if self._cursor.fetchone()[0] > 10:
                 sql3 = 'delete from %s where score = (select a.b from (select min(score) as b from %s) a)' %\
@@ -74,6 +93,15 @@ class Score:
         else:
             # 加入统计信息：最高分前几个，排序等等
             self._db.commit()
+
+    def storage_total_viruses(self, usrname:str):
+        """
+        存储并更新不同玩家所击杀的总病毒数量
+        :param usrname: 玩家姓名
+        :return: None
+        """
+        sql1 =
+
 
     def total_virus(self):
         """
@@ -90,7 +118,7 @@ class Score:
             return self._cursor.fetchone()[0]
 
     def __enter__(self):
-        pass
+        return self
     def __exit__(self, exc_type, exc_val, exc_tb):
         return True
 

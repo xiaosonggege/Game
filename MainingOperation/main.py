@@ -54,6 +54,8 @@ class Main:
         self._pause_playing = False
         #飞行器是否牺牲
         self._is_game_over = False
+        #玩家用户名昵称
+        self._usrname = None
 
         #游戏等级
         # self._NumOfViruses = Main.level_virus['easy'] #改
@@ -261,7 +263,7 @@ class Main:
 
                     self._viruses.add(new_virus)
                     self._virus_count += 1
-                except StopIteration:
+                except StopIteration: #需要修改成病毒下放完后不自动退出！
                     print('消灭病毒数量为:', self._total_score)
                     print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
                     sys.exit()
@@ -389,6 +391,14 @@ class Main:
 
         if self._is_game_over:
             self._game_over_button.draw_button()
+            #将玩家本次游戏数据导入数据库
+            with Score(name=self._usrname) as score:
+                score.virus1 = self._virus1_num
+                score.virus2 = self._virus2_num
+                score.virus3 = self._virus3_num
+                score.create_data()
+                score.update_table()
+
             #加入重置操作
 
         #

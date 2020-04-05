@@ -93,6 +93,7 @@ class VirusStyle2(Virus):
     """
     def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
         super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
+        self._sore = 3
 
 class VirusStyle3(Virus):
     """
@@ -100,6 +101,7 @@ class VirusStyle3(Virus):
     """
     def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
         super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
+        self._score = 5
 
     @classmethod
     def spliting(cls, screen:pygame.Surface, virus_image, right_pos):
