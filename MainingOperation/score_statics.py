@@ -33,6 +33,10 @@ class Score:
     virus3 = ScoreProperty('virus3_score')
 
     def _create_usrname_table(self):
+        """
+        建立usr_info数据表，如果存在的话就忽略
+        :return: None
+        """
         self._cursor.execute('show tables')
         if 'usr_info' not in (table[0] for table in self._cursor.fetchall()):
             try:
@@ -43,6 +47,7 @@ class Score:
                     virus1_total int not null ,
                     virus2_total int not null ,
                     virus3_total int not null ,
+                    max_score int not null ,
                     index name (name)
                     )
                     """
@@ -51,6 +56,19 @@ class Score:
                 print('建立usr_info有问题')
             else:
                 self._db.commit()
+
+    def update_usr_info(self):
+        """
+        更新usr_info表
+        :return: None
+        """
+        sql1 = 'update  usr_info set virus1_total = \
+        usr_info.virus1_total + %s where name = %s' % (self._virus1, self._name)
+        sql2 = 'update usr_info set virus2_total = \
+        usr_info.virus2_total + %s where name = %s' % (self._virus2, self._name)
+        sql3 = 'update usr_info set virus3_total = \
+        usr_info.virus3_total + %s where name = %s' % (self._virus3, self._name)
+        sql4 = ''
 
     def create_data(self):
         self._cursor.execute('show tables')
