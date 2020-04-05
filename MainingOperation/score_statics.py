@@ -21,9 +21,12 @@ class Score:
     score_per_virus = {'level1':1, 'level2':3, 'level3':5}
     def __init__(self, name:str, virus1_num:int=0, virus2_num:int=0, virus3_num:int=0):
         self._name = name
-        self._virus1_score = virus1_num #* Score.score_per_virus['level1']
-        self._virus2_score = virus2_num #* Score.score_per_virus['level2']
-        self._virus3_score = virus3_num #* Score.score_per_virus['level3']
+        self._virus1 = virus1_num #* Score.score_per_virus['level1']
+        self._virus2 = virus2_num #* Score.score_per_virus['level2']
+        self._virus3 = virus3_num #* Score.score_per_virus['level3']
+        self._score = self._virus1 * Score.score_per_virus['level1'] + \
+            self._virus2 * Score.score_per_virus['level2'] + \
+            self._virus3 * Score.score_per_virus['level3']
         self._db = pymysql.connect('localhost', 'root', 'xiaosonggege1025', 'Game')
         self._cursor = self._db.cursor()
 
@@ -32,14 +35,13 @@ class Score:
     virus2 = ScoreProperty('virus2_score')
     virus3 = ScoreProperty('virus3_score')
 
-    def _insert_data(self):
+    def create_data(self):
         self._cursor.execute('show tables')
         if self._name not in (table[0] for table in self._cursor.fetchall()):
             try:
                 # 默认开启手动提交
                 sql1 = """
                     create table if not exists %s (
-                    name varchar(20) primary key not null ,
                     virus1 int,
                     virus2 int,
                     virus3 int,
@@ -53,11 +55,13 @@ class Score:
                 self._db.commit()
 
 
-    def _update_table(self):
+    def update_table(self):
         try:
-            sql1 = 'insert into zhangsan values (%s, %s, %s, %s)' % \
-                   (self._name, self._virus1_score, self._virus2_score, self._virus3_score)
+            sql1 = 'insert into %s values (%s, %s, %s, %s)' % \
+                   (self._name, self._virus1, self._virus2, self._virus3, self._score)
+            print('1')
             self._cursor.execute(sql1)
+            print('no pa1')
             sql2 = 'select count(*) from %s' % self._name
             self._cursor.execute(sql2)
             #如果成绩表中成绩多余10项，就删除最差成绩，使表中数据始终为10项
@@ -92,4 +96,7 @@ class Score:
 
 
 if __name__ == '__main__':
-    pass
+    score = Score('song', 2, 2, 2)
+    score.create_data()
+    # score.update_table()
+    print(score.total_virus())

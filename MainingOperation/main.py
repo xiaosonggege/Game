@@ -140,20 +140,20 @@ class Main:
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
-            #用户输入名处，需要修改
-            if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._usr):
-                while True:
-                    content = self._usr.input_event_checking()
-                    if content == 'finish':
-                        # self._usr.draw_button()
-                        break
-                    elif content != 'delete':
-                        self._usr.text_change(added_word=content)
-                        # self._usr.draw_button()
-                    else:
-                        self._usr.text_change(is_delete=True)
-                        # self._usr.draw_button()
-            #
+            # #用户输入名处，需要修改
+            # if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._usr):
+            #     while True:
+            #         content = self._usr.input_event_checking()
+            #         if content == 'finish':
+            #             # self._usr.draw_button()
+            #             break
+            #         elif content != 'delete':
+            #             self._usr.text_change(added_word=content)
+            #             # self._usr.draw_button()
+            #         else:
+            #             self._usr.text_change(is_delete=True)
+            #             # self._usr.draw_button()
+            # #
         keys_pressed = pygame.key.get_pressed()
 
         # 游戏是否暂停
