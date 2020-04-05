@@ -21,16 +21,24 @@ class Score:
     score_per_virus = {'level1':1, 'level2':3, 'level3':5}
     def __init__(self, name:str, virus1_num:int=0, virus2_num:int=0, virus3_num:int=0):
         self._name = name
-        self._virus1 = virus1_num #* Score.score_per_virus['level1']
-        self._virus2 = virus2_num #* Score.score_per_virus['level2']
-        self._virus3 = virus3_num #* Score.score_per_virus['level3']
+        self._virus1 = virus1_num
+        self._virus2 = virus2_num
+        self._virus3 = virus3_num
         self._db = pymysql.connect('localhost', 'root', 'xiaosonggege1025', 'Game')
         self._cursor = self._db.cursor()
+        self._score = self._virus1 * Score.score_per_virus['level1'] + \
+                      self._virus2 * Score.score_per_virus['level2'] + \
+                      self._virus3 * Score.score_per_virus['level3']
 
     name = ScoreProperty('name')
-    virus1 = ScoreProperty('virus1_score')
-    virus2 = ScoreProperty('virus2_score')
-    virus3 = ScoreProperty('virus3_score')
+    virus1 = ScoreProperty('virus1')
+    virus2 = ScoreProperty('virus2')
+    virus3 = ScoreProperty('virus3')
+
+    def scoring(self):
+        self._score = self._virus1 * Score.score_per_virus['level1'] + \
+                      self._virus2 * Score.score_per_virus['level2'] + \
+                      self._virus3 * Score.score_per_virus['level3']
 
     def _create_usrname_table(self):
         """
@@ -62,13 +70,34 @@ class Score:
         更新usr_info表
         :return: None
         """
-        sql1 = 'update  usr_info set virus1_total = \
-        usr_info.virus1_total + %s where name = %s' % (self._virus1, self._name)
-        sql2 = 'update usr_info set virus2_total = \
-        usr_info.virus2_total + %s where name = %s' % (self._virus2, self._name)
-        sql3 = 'update usr_info set virus3_total = \
-        usr_info.virus3_total + %s where name = %s' % (self._virus3, self._name)
-        sql4 = ''
+        sql0 = "insert into usr_info values ('%s', %s, %s, %s, %s)" % \
+               (self._name, self._virus1, self._virus2, self._virus3, self._score)
+        sql1 = "update  usr_info set virus1_total = \
+        usr_info.virus1_total + %s where name = '%s'" % (self._virus1, self._name)
+        sql2 = "update usr_info set virus2_total = \
+        usr_info.virus2_total + %s where name = '%s'" % (self._virus2, self._name)
+        sql3 = "update usr_info set virus3_total = \
+        usr_info.virus3_total + %s where name = '%s'" % (self._virus3, self._name)
+        sql4 = 'update usr_info set max_score = \
+        (select b.a from (select max(score) as a from %s) b)' % self._name
+        # self._cursor.execute('select name from usr_info')
+        # if self._name not in [i[0] for i in self._cursor.fetchall()]:
+        #     self._cursor.execute(sql0)
+        # else:
+        #     for sql in [sql1, sql2, sql3, sql4]:
+        #         self._cursor.execute(sql)
+        # self._db.commit()
+        try:
+            self._cursor.execute('select name from usr_info')
+            if self._name not in [i[0] for i in self._cursor.fetchall()]:
+                self._cursor.execute(sql0)
+            else:
+                for sql in [sql1, sql2, sql3, sql4]:
+                    self._cursor.execute(sql)
+        except:
+            print('usr_info数据表更新出错!')
+        else:
+            self._db.commit()
 
     def create_data(self):
         self._cursor.execute('show tables')
@@ -92,15 +121,11 @@ class Score:
 
     def update_table(self):
         #计算总分
-        self._score = self._virus1 * Score.score_per_virus['level1'] + \
-                      self._virus2 * Score.score_per_virus['level2'] + \
-                      self._virus3 * Score.score_per_virus['level3']
+
         try:
             sql1 = 'insert into %s values (%s, %s, %s, %s)' % \
                    (self._name, self._virus1, self._virus2, self._virus3, self._score)
-            print('1')
             self._cursor.execute(sql1)
-            print('no pa1')
             sql2 = 'select count(*) from %s' % self._name
             self._cursor.execute(sql2)
 
@@ -114,15 +139,6 @@ class Score:
         else:
             # 加入统计信息：最高分前几个，排序等等
             self._db.commit()
-
-    def storage_total_viruses(self, usrname:str):
-        """
-        存储并更新不同玩家所击杀的总病毒数量
-        :param usrname: 玩家姓名
-        :return: None
-        """
-        sql1 =
-
 
     def total_virus(self):
         """
@@ -139,13 +155,20 @@ class Score:
             return self._cursor.fetchone()[0]
 
     def __enter__(self):
+        self._create_usrname_table()
         return self
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         return True
 
 
 if __name__ == '__main__':
-    score = Score('song', 2, 2, 2)
-    score.create_data()
-    # score.update_table()
-    print(score.total_virus())
+    with Score('xii') as score:
+        score.virus1 = 2
+        score.virus2 = 2
+        score.virus3 = 3
+        score.scoring()
+        score.create_data()
+        score.update_table()
+        # print(score.total_virus())
+        score.update_usr_info()

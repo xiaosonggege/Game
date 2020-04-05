@@ -55,7 +55,7 @@ class Main:
         #飞行器是否牺牲
         self._is_game_over = False
         #玩家用户名昵称
-        self._usrname = None
+        self._usrname = 'xing'
 
         #游戏等级
         # self._NumOfViruses = Main.level_virus['easy'] #改
@@ -396,8 +396,11 @@ class Main:
                 score.virus1 = self._virus1_num
                 score.virus2 = self._virus2_num
                 score.virus3 = self._virus3_num
+                score.scoring()
                 score.create_data()
                 score.update_table()
+                score.update_usr_info()
+
 
             #加入重置操作
 

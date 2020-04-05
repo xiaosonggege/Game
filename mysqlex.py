@@ -11,17 +11,21 @@
 import pymysql
 
 db = pymysql.connect('localhost', 'root',
-                     'xiaosonggege1025', 'MyfirstDatabase')
+                     'xiaosonggege1025', 'Game')
 cursor = db.cursor()
 
 # cursor.execute("""insert into user values (4, 'd', %s)""" % a)
 # cursor.execute("update user set name = 'd' where id = 3")
 # cursor.execute("delete from user where id = %s" % 3)
 # db.commit()
-cursor.execute('show tables')
+# cursor.execute('show tables')
 # cursor.execute('select count(*) from user')
+cursor.execute('select name from usr_info')
 print([i[0] for i in cursor.fetchall()])
 # for i in cursor.fetchall():
 #     print(i[2])
 # print('grade' in (i[0] for i in cursor.fetchall()))
+sql0 = "insert into usr_info values ('%s', '%s', '%s', '%s', '%s')" % \
+               ('xing', 1, 2, 3, 4)
+cursor.execute(sql0)
 db.close()
