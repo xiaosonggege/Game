@@ -22,12 +22,12 @@ class StartButton:
         self._text_color = text_color
         #None为使用pygame的默认字体
         self._font = pygame.font.SysFont(name=None, size=text_size) #从系统字体库创建一个 Font 对象
-        #防止按钮
+        #放置按钮位置
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2 if pos is None else self._RectOfScreen.centerx
         self.rect.centery = self._height + 50 if pos is None else self._RectOfScreen.centery
         #文本Surface
-        self._prep_msg = self._msg_set(msg=message)
+        self._msg_set(msg=message)
 
     @property
     def width_height(self):
@@ -37,7 +37,7 @@ class StartButton:
         self._width, self._height = value
 
     def _msg_set(self, msg:str):
-        #创建一个新的 Surface 对象，并在上边渲染指定的文本。
+        #将文本变为surface对象
         self._msg_image = self._font.render(msg, True, self._text_color, self._button_color)
         self._msg_image_rect = self._msg_image.get_rect()
         self._msg_image_rect.center = self.rect.center

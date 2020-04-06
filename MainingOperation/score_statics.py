@@ -9,6 +9,10 @@
 @time: 2020/3/31 11:34 上午
 '''
 import pymysql
+import pygame
+from MainingOperation.basic_settings import Settings
+
+
 class ScoreProperty:
     def __init__(self, name):
         self._name = '_' + name
@@ -160,6 +164,42 @@ class Score:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         return True
+
+class ScoreBoarder:
+    def __init__(self, screen:pygame.Surface, width:int=100,
+                 height:int=50, button_color=Settings().bg_color,
+                 text_color=(255, 255, 255), text_size=48):
+        self._screen = screen
+        self._RectOfScreen = self._screen.get_rect()
+        #设置按钮
+        self._width = width
+        self._height = height
+        self._button_color = button_color
+        self._text_color = text_color
+        self._font = pygame.font.SysFont(name=None, size=text_size)
+        self.rect = pygame.Rect(0, 0, self._width, self._height)
+        self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
+        self.rect.centery = self._height + 700
+        self._msg = 0
+
+    @property
+    def msg(self):
+        return self._msg
+    @msg.setter
+    def msg(self, message:int):
+        self._msg = message
+
+    def msg_set(self):
+        self._msg_image = self._font.render('score:%s' % self._msg, True, self._text_color, self._button_color)
+        self._msg_image_rect = self._msg_image.get_rect()
+        self._msg_image_rect.center = self.rect.center
+
+    def draw_button(self):
+        #绘制一个用颜色填充的矩形，并在矩形上绘制文本Surface
+        self._screen.fill(color=self._button_color, rect=self.rect)
+        self._screen.blit(self._msg_image, self._msg_image_rect)
+
+
 
 
 if __name__ == '__main__':

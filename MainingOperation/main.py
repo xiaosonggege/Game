@@ -16,7 +16,7 @@ from Components.bullet import Bullet
 from Components.button import StartButton, LevelButton, Username
 from pygame.sprite import Group
 from Components.virus import Virus, VirusStyle2, VirusStyle3
-from MainingOperation.score_statics import Score
+from MainingOperation.score_statics import Score, ScoreBoarder
 import numpy as np
 
 def PositionInit(low:int, high:int, count:int):
@@ -328,6 +328,11 @@ class Main:
                     for per_virus in group_virus:
                         per_virus.dead = True
                         self._total_score += per_virus.score
+                        self._score_boarder.msg = self._total_score
+                        # 记分牌
+                        self._score_boarder.msg_set()
+                        self._score_boarder.draw_button()
+                        #
                         if type(per_virus) == Virus:
                             self._virus1_num += 1
                         elif type(per_virus) == VirusStyle2:
@@ -429,7 +434,7 @@ class Main:
         self._screen.fill(bg_color)
         # 添加游戏边线
         self._boundary()
-        # 按钮
+        # 按钮和记分牌
         self._button = StartButton(screen=self._screen, message='play')
         self._level_button1 = LevelButton(screen=self._screen, message='1')
         self._level_button2 = LevelButton(screen=self._screen, message='2')
@@ -438,6 +443,7 @@ class Main:
                                    width=600, height=400, button_color=(0, 255, 0), text_color=(255, 255, 255),
                                    text_size=48, pos='center')
         self._usr = Username(screen=self._screen)
+        self._score_boarder = ScoreBoarder(screen=self._screen)
         #
         self._aircraft.v = 30
         #
@@ -461,6 +467,9 @@ class Main:
             self._level_button2.draw_button()
             self._level_button3.draw_button()
             self._usr.draw_button()
+            #记分牌
+            self._score_boarder.msg_set()
+            self._score_boarder.draw_button()
             pygame.display.flip()
             #游戏开始且未按下暂停键
             # if self._start_playing and not self._pause_playing:
