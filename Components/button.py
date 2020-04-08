@@ -173,6 +173,40 @@ class Username:
         elif keys_pressed[pygame.K_RETURN]: #回车键
             return 'finish'
 
+class ScoreScreen:
+    def __init__(self, screen:pygame.Surface, message:str,
+                 button_color=(255, 0, 0), text_color=(255, 255, 255), text_size=48):
+        self._screen = screen
+        #设置按钮
+        self._width = int(self._screen.get_rect().width / 2)
+        self._height = int(self._screen.get_rect().height / 2)
+        self._button_color = button_color #第二层方块颜色，可调
+        self._text_color = text_color #第二层方块上的文字Surface
+        #None为使用pygame的默认字体
+        self._font = pygame.font.SysFont(name=None, size=text_size)
+        self.rect = pygame.Rect(0, 0, self._width, self._height)
+        self.rect.center = self._screen.get_rect().center
+        #文本Surface
+        # self._mas_set(msg=message)
+
+    def _msg_set(self, *msgs):
+        #将文本变成Surface对象
+        self._msg_images = []
+        for msg in msgs:
+            self._msg_images.append(self._font.render(msg, True, self._text_color, self._button_color))
+        #均匀码放各条记录
+        item_count = 0
+        for msg_image in self._msg_images:
+            msg_image.get_rect().centerx = self.rect.centerx
+            msg_image.get_rect().centery = self.rect.top + 30 + msg_image.get_rect().height + \
+                                           item_count * 2 * msg_image.get_rect().height
+            item_count += 1
+
+    def draw_button(self):
+        self._screen.fill(color=self._button_color, rect=self.rect) #screen上的第一层地板着色
+        [self._screen.blit(msg_image, msg_image.get_rect()) for msg_image in self._msg_images]
+
+
 
 
 
