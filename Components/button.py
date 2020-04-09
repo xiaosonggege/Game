@@ -203,10 +203,32 @@ class ScoreScreen:
             item_count += 1
 
     def draw_button(self):
-        self._screen.fill(color=self._button_color, rect=self.rect) #screen上的第一层地板着色
+        self._screen.fill(color=self._button_color, rect=self.rect) #screen上的第二层地板着色
         [self._screen.blit(msg_image, msg_image.get_rect()) for msg_image in self._msg_images]
 
+class HistoryRecord:
+    def __init__(self, screen:pygame.Surface, message:str,
+                 button_color=(255, 0, 0), text_color=(255, 255, 255), text_size=48):
+        self._screen = screen
+        #设置按钮
+        self._width = 100
+        self._height = 50
+        self._button_color = button_color
+        self._text_color = text_color
+        self._font = pygame.font.SysFont(name=None, size=text_size)
+        self.rect = pygame.Rect(0, 0, self._width, self._height)
+        self.rect.centerx = self._screen.get_rect().right - Settings().boundary_pos / 2
+        self.rect.centery = self._height + 200
+        self._msg_set(msg=message)
 
+    def _msg_set(self, msg:str):
+        self._msg_image = self._font.render(msg, True, self._text_color, self._button_color)
+        self._msg_image_rect = self._msg_image.get_rect()
+        self._msg_image_rect.center = self.rect.center
+
+    def draw_button(self):
+        self._screen.fill(color=self._button_color, rect=self.rect)
+        self._screen.blit(self._msg_image, self._msg_image_rect)
 
 
 
