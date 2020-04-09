@@ -13,7 +13,7 @@ import sys
 from MainingOperation.basic_settings import Settings
 from Components.aircraft import Aircraft
 from Components.bullet import Bullet
-from Components.button import StartButton, LevelButton, Username
+from Components.button import StartButton, LevelButton, Username, ScoreScreen, HistoryRecord
 from pygame.sprite import Group
 from Components.virus import Virus, VirusStyle2, VirusStyle3
 from MainingOperation.score_statics import Score, ScoreBoarder
@@ -54,8 +54,10 @@ class Main:
         self._pause_playing = False
         #飞行器是否牺牲
         self._is_game_over = False
-        #玩家用户名昵称
+        #玩家用户名昵称 ##最终需要去掉
         self._usrname = 'xing'
+        # 是否按下查询历史记录的按钮
+        self._look_over_history = False
 
         #游戏等级
         # self._NumOfViruses = Main.level_virus['easy'] #改
@@ -139,6 +141,9 @@ class Main:
                 self._init_posxes = PositionInit(low=self._screen.get_rect().left,
                                                  high=self._screen.get_rect().right - Settings().boundary_pos,
                                                  count=self._NumOfViruses)  #
+
+            elif mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._history_record):
+                self._look_over_history = True
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
@@ -396,7 +401,7 @@ class Main:
 
         if self._is_game_over:
             self._game_over_button.draw_button()
-            #将玩家本次游戏数据导入数据库
+            #将玩家本次游戏数据导入数据库，输出数据库信息到历史记录按键后出现的面板上
             with Score(name=self._usrname) as score:
                 score.virus1 = self._virus1_num
                 score.virus2 = self._virus2_num
@@ -405,6 +410,11 @@ class Main:
                 score.create_data()
                 score.update_table()
                 score.update_usr_info()
+                # 将用户的历史信息更新到历史记录按键后出现的面板上，需要呈现的是
+                if self._look_over_history:
+                    #将历史记录打印到面板上
+                    pass
+
 
 
             #加入重置操作
@@ -444,6 +454,8 @@ class Main:
                                    text_size=48, pos='center')
         self._usr = Username(screen=self._screen)
         self._score_boarder = ScoreBoarder(screen=self._screen)
+        self._score_screen = ScoreScreen(screen=self._screen, )
+        self._history_record = HistoryRecord(screen=self._screen, message='历史成绩')
         #
         self._aircraft.v = 30
         #
@@ -470,6 +482,8 @@ class Main:
             #记分牌
             self._score_boarder.msg_set()
             self._score_boarder.draw_button()
+            #历史记录键
+            self._history_record.draw_button()
             pygame.display.flip()
             #游戏开始且未按下暂停键
             # if self._start_playing and not self._pause_playing:
