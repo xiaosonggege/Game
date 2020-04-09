@@ -230,6 +230,9 @@ class HistoryRecord:
         self._screen.fill(color=self._button_color, rect=self.rect)
         self._screen.blit(self._msg_image, self._msg_image_rect)
 
+class Reset:
+    pass
+
 
 
 

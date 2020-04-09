@@ -158,6 +158,13 @@ class Score:
             self._db.commit()
             return self._cursor.fetchone()[0]
 
+    def outprint(self):
+        """
+        输出数据
+        :return:
+        """
+        pass
+
     def __enter__(self):
         self._create_usrname_table()
         return self
