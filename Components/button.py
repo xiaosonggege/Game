@@ -208,17 +208,17 @@ class ScoreScreen:
 
 class HistoryRecord:
     def __init__(self, screen:pygame.Surface, message:str,
-                 button_color=(255, 0, 0), text_color=(255, 255, 255), text_size=48):
+                 button_color=(255, 0, 0), text_color=(255, 255, 255), text_size=30):
         self._screen = screen
         #设置按钮
-        self._width = 100
+        self._width = 150
         self._height = 50
         self._button_color = button_color
         self._text_color = text_color
         self._font = pygame.font.SysFont(name=None, size=text_size)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._screen.get_rect().right - Settings().boundary_pos / 2
-        self.rect.centery = self._height + 200
+        self.rect.centery = self._height + 270
         self._msg_set(msg=message)
 
     def _msg_set(self, msg:str):

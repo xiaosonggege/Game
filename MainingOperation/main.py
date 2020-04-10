@@ -454,8 +454,8 @@ class Main:
                                    text_size=48, pos='center')
         self._usr = Username(screen=self._screen)
         self._score_boarder = ScoreBoarder(screen=self._screen)
-        self._score_screen = ScoreScreen(screen=self._screen, )
-        self._history_record = HistoryRecord(screen=self._screen, message='历史成绩')
+        # self._score_screen = ScoreScreen(screen=self._screen, )
+        self._history_record = HistoryRecord(screen=self._screen, message='History Record')
         #
         self._aircraft.v = 30
         #

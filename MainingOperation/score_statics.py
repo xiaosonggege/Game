@@ -173,9 +173,9 @@ class Score:
         return True
 
 class ScoreBoarder:
-    def __init__(self, screen:pygame.Surface, width:int=100,
+    def __init__(self, screen:pygame.Surface, width:int=150,
                  height:int=50, button_color=Settings().bg_color,
-                 text_color=(255, 255, 255), text_size=48):
+                 text_color=(255, 255, 255), text_size=38):
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()
         #设置按钮
@@ -186,7 +186,7 @@ class ScoreBoarder:
         self._font = pygame.font.SysFont(name=None, size=text_size)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
-        self.rect.centery = self._height + 700
+        self.rect.centery = self._height + 200
         self._msg = 0
 
     @property
