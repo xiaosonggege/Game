@@ -46,8 +46,12 @@ class Aircraft:
         self._RectBorderOfScreen = self._screen.get_rect() #屏幕矩形框Rect
         self._rect = self._ImageOfAircraft.get_rect() #飞行器矩形框Rect
         self._v = 30 #飞船速度
+        #飞行器原始大小
+        self._region_width = self._rect.width
+        self._region_height = self._rect.height
 
-        self._rect.centerx = self._RectBorderOfScreen.centerx #飞行器矩形框中心位置横标与屏幕矩形框中心位置横标相等
+        self._rect.centerx = int(self._RectBorderOfScreen.left +
+                                 (self._RectBorderOfScreen.width - Settings().boundary_pos) / 2) #飞行器矩形框中心位置横标与屏幕矩形框中心位置横标相等
         self._rect.bottom = self._RectBorderOfScreen.bottom #飞行器矩形框底端与屏幕矩形框底端相等
     screen = AircraftProperty('screen')
     ImageOfAircraft = AircraftProperty('ImageOfAircraft')
@@ -73,6 +77,16 @@ class Aircraft:
         self._ImageOfAircraft = pygame.transform.smoothscale(self._ImageOfAircraft, size)
         self._rect = self._ImageOfAircraft.get_rect()
         self.rect = pos
+
+    def reset(self):
+        """
+        飞船状态，大小，位置
+        :return:
+        """
+        self._rect.centerx = int(self._RectBorderOfScreen.left + (self._RectBorderOfScreen.width - Settings().boundary_pos) / 2)  # 飞行器矩形框中心位置横标与屏幕矩形框中心位置横标相等
+        self._rect.bottom = self._RectBorderOfScreen.bottom  # 飞行器矩形框底端与屏幕矩形框底端相等
+        self.change_size(pos=(self._rect.centerx, self._rect.centery),
+                                               size=(self._region_width, self._region_height))
 
 
 if __name__ == '__main__':

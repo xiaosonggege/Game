@@ -55,7 +55,7 @@ class LevelButton(StartButton):
         # 均匀摆放等级按钮
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = int(self._RectOfScreen.right + Settings().boundary_pos * (int(message) * 0.25 - 1)) # (int(message)-1) * 2 * self._width
-        self.rect.centery = self._height + 130
+        self.rect.centery = self._height + 200 #+130
         self._prep_msg = super()._msg_set(msg=message)
         self._is_pressed = False
 
@@ -63,8 +63,8 @@ class LevelButton(StartButton):
     def pressed(self):
         return self._is_pressed
     @pressed.setter
-    def pressed(self, value:bool=True):
-        self._is_pressed = True
+    def pressed(self, value:bool):
+        self._is_pressed = value
 
     def draw_button(self):
         self._screen.fill(color=self._button_color, rect=self.rect) #按钮着色
@@ -84,7 +84,7 @@ class Username:
         self._font = pygame.font.SysFont(name=None, size=10)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
-        self.rect.centery = 600
+        self.rect.centery = 470
         #文本surface
         self._prep_msg = self._msg_set(msg=self._username)
 
@@ -174,8 +174,7 @@ class Username:
             return 'finish'
 
 class ScoreScreen:
-    def __init__(self, screen:pygame.Surface, message:str,
-                 button_color=(255, 0, 0), text_color=(255, 255, 255), text_size=48):
+    def __init__(self, screen:pygame.Surface, button_color=(255, 0, 0), text_color=(255, 255, 255), text_size=48):
         self._screen = screen
         #设置按钮
         self._width = int(self._screen.get_rect().width / 2)
@@ -186,10 +185,8 @@ class ScoreScreen:
         self._font = pygame.font.SysFont(name=None, size=text_size)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.center = self._screen.get_rect().center
-        #文本Surface
-        # self._mas_set(msg=message)
 
-    def _msg_set(self, *msgs):
+    def msg_set(self, *msgs):
         #将文本变成Surface对象
         self._msg_images = []
         for msg in msgs:
@@ -208,7 +205,7 @@ class ScoreScreen:
 
 class HistoryRecord:
     def __init__(self, screen:pygame.Surface, message:str,
-                 button_color=(255, 0, 0), text_color=(255, 255, 255), text_size=30):
+                 button_color=(255, 0, 0), text_color=(255, 255, 255), text_size=23):
         self._screen = screen
         #设置按钮
         self._width = 150
@@ -218,7 +215,7 @@ class HistoryRecord:
         self._font = pygame.font.SysFont(name=None, size=text_size)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._screen.get_rect().right - Settings().boundary_pos / 2
-        self.rect.centery = self._height + 270
+        self.rect.centery = self._height + 350
         self._msg_set(msg=message)
 
     def _msg_set(self, msg:str):
@@ -231,7 +228,42 @@ class HistoryRecord:
         self._screen.blit(self._msg_image, self._msg_image_rect)
 
 class Reset:
-    pass
+    def __init__(self, screen:pygame.Surface, message:str,
+                 width:int=100, height:int=50, button_color=(255, 0, 0),
+                 text_color=(255, 255, 255), text_size=38, pos=None):
+        self._screen = screen
+        self._RectOfScreen = self._screen.get_rect()
+        #设置按钮
+        self._width, self._height = width, height
+        self._button_color = button_color
+        self._text_color = text_color
+        #None为使用pygame的默认字体
+        self._font = pygame.font.SysFont(name=None, size=text_size) #从系统字体库创建一个 Font 对象
+        #放置按钮位置
+        self.rect = pygame.Rect(0, 0, self._width, self._height)
+        self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2 if pos is None else self._RectOfScreen.centerx
+        self.rect.centery = self._height + 130 if pos is None else self._RectOfScreen.centery
+        #文本Surface
+        self._msg_set(msg=message)
+
+    @property
+    def width_height(self):
+        return self._width, self._height
+
+    @width_height.setter
+    def width_height(self, value: tuple):
+        self._width, self._height = value
+
+    def _msg_set(self, msg:str):
+        #将文本变为surface对象
+        self._msg_image = self._font.render(msg, True, self._text_color, self._button_color)
+        self._msg_image_rect = self._msg_image.get_rect()
+        self._msg_image_rect.center = self.rect.center
+
+    def draw_button(self):
+        #绘制一个用颜色填充的按钮，再绘制文本
+        self._screen.fill(color=self._button_color, rect=self.rect) #按钮着色
+        self._screen.blit(self._msg_image, self._msg_image_rect) #按钮绘制
 
 
 

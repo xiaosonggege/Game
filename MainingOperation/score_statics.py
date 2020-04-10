@@ -44,6 +44,9 @@ class Score:
                       self._virus2 * Score.score_per_virus['level2'] + \
                       self._virus3 * Score.score_per_virus['level3']
 
+    def closing_database(self):
+        self._db.close()
+
     def _create_usrname_table(self):
         """
         建立usr_info数据表，如果存在的话就忽略
@@ -158,12 +161,31 @@ class Score:
             self._db.commit()
             return self._cursor.fetchone()[0]
 
-    def outprint(self):
+    def outprint(self, name):
         """
         输出数据
+        :param name: 用户名
         :return:
         """
-        pass
+        #usrname
+        usrname = 'usrname: %s' % name
+
+        #历史最高分
+        sql0 = "select max_score from usr_info where name='%s'" % name
+        self._cursor.execute(sql0)
+        maxscore = 'max score: %s' % self._cursor.fetchone()[0]
+
+        #十次最好成绩属性
+        sql1 = 'describe %s' % name
+        self._cursor.execute(sql1)
+        column_name = ' '.join([e[0] for e in self._cursor.fetchall()])
+        sql2 = 'select * from %s' % name
+        self._cursor.execute(sql2)
+        content = [' '.join([str(e) for e in i]) for i in self._cursor.fetchall()]
+        #所有内容组成列表输出
+        content.insert(0, usrname)
+        content.insert(1, maxscore)
+        return content
 
     def __enter__(self):
         self._create_usrname_table()
@@ -186,7 +208,7 @@ class ScoreBoarder:
         self._font = pygame.font.SysFont(name=None, size=text_size)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
-        self.rect.centery = self._height + 200
+        self.rect.centery = self._height + 270
         self._msg = 0
 
     @property

@@ -20,12 +20,13 @@ cursor = db.cursor()
 # db.commit()
 # cursor.execute('show tables')
 # cursor.execute('select count(*) from user')
-cursor.execute('select name from usr_info')
-print([i[0] for i in cursor.fetchall()])
-# for i in cursor.fetchall():
-#     print(i[2])
-# print('grade' in (i[0] for i in cursor.fetchall()))
-sql0 = "insert into usr_info values ('%s', '%s', '%s', '%s', '%s')" % \
-               ('xing', 1, 2, 3, 4)
+sql0 = 'select virus1_total, virus2_total, virus3_total from %s' % 'usr_info'
+sql1 = 'describe usr_info'
 cursor.execute(sql0)
+db.commit()
+str1 = [' '.join([str(e) for e in i]) for i in cursor.fetchall()]
+print(str1)
+# print(cursor.fetchall())
+# cursor.execute("select max_score from usr_info where name='song'")
+# print(cursor.fetchone()[0])
 db.close()
