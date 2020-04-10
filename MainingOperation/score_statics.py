@@ -178,10 +178,11 @@ class Score:
         #十次最好成绩属性
         sql1 = 'describe %s' % name
         self._cursor.execute(sql1)
-        column_name = ' '.join([e[0] for e in self._cursor.fetchall()])
+        # column_name = ' '.join([e[0] for e in self._cursor.fetchall()])
+        column_name = '{0:8} {1:8} {2:8} {3:8}'.format(*[e[0] for e in self._cursor.fetchall()])
         sql2 = 'select * from %s' % name
         self._cursor.execute(sql2)
-        content = [' '.join([str(e) for e in i]) for i in self._cursor.fetchall()]
+        content = ['{0:8}    {1:8}    {2:8}    {3:8}'.format(*[str(e) for e in i]) for i in self._cursor.fetchall()]
         #所有内容组成列表输出
         content.insert(0, usrname)
         content.insert(1, maxscore)
@@ -228,9 +229,6 @@ class ScoreBoarder:
         #绘制一个用颜色填充的矩形，并在矩形上绘制文本Surface
         self._screen.fill(color=self._button_color, rect=self.rect)
         self._screen.blit(self._msg_image, self._msg_image_rect)
-
-
-
 
 if __name__ == '__main__':
     with Score('xing') as score:

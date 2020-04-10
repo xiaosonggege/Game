@@ -177,8 +177,8 @@ class ScoreScreen:
     def __init__(self, screen:pygame.Surface, button_color=(255, 0, 0), text_color=(255, 255, 255)):
         self._screen = screen
         #设置按钮
-        self._width = int(self._screen.get_rect().width / 2)
-        self._height = int(self._screen.get_rect().height / 2)
+        self._width = int(self._screen.get_rect().height / 2)
+        self._height = int(self._screen.get_rect().width / 2)
         self._button_color = button_color #第二层方块颜色，可调
         self._text_color = text_color #第二层方块上的文字Surface
         self.rect = pygame.Rect(0, 0, self._width, self._height)
@@ -189,14 +189,15 @@ class ScoreScreen:
         self._msg_images = []
         for msg in msgs:
             # None为使用pygame的默认字体
-            font = pygame.font.SysFont(name=None, size=20)
+            font = pygame.font.SysFont(name=None, size=30)
             self._msg_images.append(font.render(msg, True, self._text_color, self._button_color))
         self._msg_rects = [msg_image.get_rect() for msg_image in self._msg_images]
         #均匀码放各条记录
         item_count = 0
         for msg_image in self._msg_rects:
-            msg_image.centerx = self.rect.centerx
-            msg_image.centery = self.rect.top + 30 + msg_image.height + \
+            # msg_image.centerx = self.rect.centerx
+            msg_image.left = self.rect.left + 55 #改到居中
+            msg_image.centery = self.rect.top + 80 + msg_image.height + \
                                            item_count * 2 * msg_image.height
             item_count += 1
 
