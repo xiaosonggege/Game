@@ -185,6 +185,7 @@ class Score:
         #所有内容组成列表输出
         content.insert(0, usrname)
         content.insert(1, maxscore)
+        content.insert(2, column_name)
         return content
 
     def __enter__(self):
@@ -232,12 +233,13 @@ class ScoreBoarder:
 
 
 if __name__ == '__main__':
-    with Score('xii') as score:
-        score.virus1 = 2
-        score.virus2 = 2
-        score.virus3 = 3
-        score.scoring()
-        score.create_data()
-        score.update_table()
-        # print(score.total_virus())
-        score.update_usr_info()
+    with Score('xing') as score:
+        # score.virus1 = 2
+        # score.virus2 = 2
+        # score.virus3 = 3
+        # score.scoring()
+        # score.create_data()
+        # score.update_table()
+        # # print(score.total_virus())
+        # score.update_usr_info()
+        print(score.outprint('song'))

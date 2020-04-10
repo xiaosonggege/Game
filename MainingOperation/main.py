@@ -145,7 +145,10 @@ class Main:
                                                  count=self._NumOfViruses)  #
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._history_record):
-                self._look_over_history = True
+                if not self._look_over_history:
+                    self._look_over_history = True
+                else:
+                    self._look_over_history = False
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
@@ -444,24 +447,19 @@ class Main:
                 score.create_data()
                 score.update_table()
                 score.update_usr_info()
-                # 将用户的历史信息更新到历史记录按键后出现的面板上，需要呈现的是
-                if self._look_over_history:
-                    #将历史记录打印到面板上
-                    content = score.outprint(self._usrname)
-                    self._score_screen.msg_set(*content)
-                    self._score_screen.draw_button()
                 #关闭数据库连接
                 score.closing_database()
 
-
-
-            #加入重置操作
-
-        #
-                #
-                # pygame.display.flip()
-                # pygame.display.update()
-
+        # 将用户的历史信息更新到历史记录按键后出现的面板上，需要呈现的是
+        if self._look_over_history:
+            with Score(name=self._usrname) as score:
+                #将历史记录打印到面板上
+                content = score.outprint(self._usrname)
+                # print(content)
+                self._score_screen.msg_set(*content)
+                self._score_screen.draw_button()
+                #关闭数据库连接
+                score.closing_database()
 
     def _boundary(self):
         """
