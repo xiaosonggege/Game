@@ -42,11 +42,15 @@ def run_game():
     screen.fill(bg_color)
     while True:
         pygame.display.set_caption("Alien Invasion")
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        print(mouse_x, mouse_y)
+        # mouse_x, mouse_y = pygame.mouse.get_pos()
+        # print(mouse_x, mouse_y)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+        keys_pressed = pygame.key.get_pressed()
+        if keys_pressed[pygame.K_BACKSPACE]:
+            print('DELETE')
+
         pygame.display.flip()
 
 

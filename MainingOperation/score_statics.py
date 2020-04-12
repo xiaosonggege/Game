@@ -113,10 +113,10 @@ class Score:
                 # 默认开启手动提交
                 sql1 = """
                     create table if not exists %s (
-                    virus1 int,
-                    virus2 int,
-                    virus3 int,
-                    score int 
+                    virus1 int default 0,
+                    virus2 int default 0,
+                    virus3 int default 0,
+                    score int default 0
                     )
                     """ % self._name
                 self._cursor.execute(sql1)

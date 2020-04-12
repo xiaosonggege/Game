@@ -56,6 +56,8 @@ class Main:
         self._is_game_over = False
         #玩家用户名昵称 ##最终需要去掉
         self._usrname = 'xing'
+        #标记用户是否能输入用户名
+        self._can_input_usrname = False
         # 是否按下查询历史记录的按钮
         self._look_over_history = False
         # 重置标志
@@ -184,85 +186,89 @@ class Main:
                     if button.pressed:
                         button.pressed = False
 
-            # #用户输入名处，需要修改
-            # if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._usr):
-            #     while True:
-            #         content = self._usr.input_event_checking()
-            #         if content == 'finish':
-            #             # self._usr.draw_button()
-            #             break
-            #         elif content != 'delete':
-            #             self._usr.text_change(added_word=content)
-            #             # self._usr.draw_button()
-            #         else:
-            #             self._usr.text_change(is_delete=True)
-            #             # self._usr.draw_button()
-            # #
+            #用户输入名处，需要修改
+            if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._usr):
+                self._can_input_usrname = True
+                
+            #
         keys_pressed = pygame.key.get_pressed()
-
-        # 游戏是否暂停
-        if keys_pressed[pygame.K_p]:
-            if not self._pause_playing:
-                self._pause_playing = True
+        if self._can_input_usrname:
+            content = self._usr.input_event_checking(keys_pressed)
+            # print(content)
+            if content == 'finish':
+                # self._usr.draw_button()
+                self._can_input_usrname = False
+            elif content != 'delete':
+                self._usr.text_change(added_word=content)
+                # self._usr.draw_button()
             else:
-                self._pause_playing = False
+                self._usr.text_change(is_delete=True)
+                # self._usr.draw_button()
+        else:
+            # 游戏是否暂停
+            if keys_pressed[pygame.K_p]:
+                if not self._pause_playing:
+                    self._pause_playing = True
+                else:
+                    self._pause_playing = False
 
-        # 退出键
-        if keys_pressed[pygame.K_q]:
-            print('消灭病毒数量为:', self._total_score)
-            print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
-            sys.exit()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            # 退出键
+            if keys_pressed[pygame.K_q]:
                 print('消灭病毒数量为:', self._total_score)
                 print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
                 sys.exit()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    print('消灭病毒数量为:', self._total_score)
+                    print(
+                        '消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
+                    sys.exit()
 
-        if self._start_playing and not self._pause_playing:
-            # 对飞行器
-            if keys_pressed[pygame.K_RIGHT]:
-                self._can_right = True
-            else:
-                self._can_right = False
-            if keys_pressed[pygame.K_LEFT]:
-                self._can_left = True
-            else:
-                self._can_left = False
-            if keys_pressed[pygame.K_UP]:
-                self._can_up = True
-            else:
-                self._can_up = False
-            if keys_pressed[pygame.K_DOWN]:
-                self._can_down = True
-            else:
-                self._can_down = False
-
-
-            # if keys_pressed[pygame.K_2]:
-            #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-            #                                size=self._size_big1)
-            # if keys_pressed[pygame.K_3]:
-            #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-            #                                size=self._size_big2)
-            if keys_pressed[pygame.K_1]:
-                if not self._is_original:
-                    self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-                                               size=self._size_small)
-                    self._is_original = True
+            if self._start_playing and not self._pause_playing:
+                # 对飞行器
+                if keys_pressed[pygame.K_RIGHT]:
+                    self._can_right = True
                 else:
-                    self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-                                               size=self._size_original)
-                    self._is_original = False
+                    self._can_right = False
+                if keys_pressed[pygame.K_LEFT]:
+                    self._can_left = True
+                else:
+                    self._can_left = False
+                if keys_pressed[pygame.K_UP]:
+                    self._can_up = True
+                else:
+                    self._can_up = False
+                if keys_pressed[pygame.K_DOWN]:
+                    self._can_down = True
+                else:
+                    self._can_down = False
 
-            # 对子弹
-            if keys_pressed[pygame.K_SPACE]:
-                new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
-                self._bullets.add(new_bullet)  # 将新子弹加入编组进行管理
-            # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有 测试用
-            # if len(self._viruses) < self._NumOfViruses:
-            #     virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
-            #     new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
-            #     self._viruses.add(new_virus)
+                # if keys_pressed[pygame.K_2]:
+                #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                #                                size=self._size_big1)
+                # if keys_pressed[pygame.K_3]:
+                #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                #                                size=self._size_big2)
+                if keys_pressed[pygame.K_1]:
+                    if not self._is_original:
+                        self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                                   size=self._size_small)
+                        self._is_original = True
+                    else:
+                        self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
+                                                   size=self._size_original)
+                        self._is_original = False
+
+                # 对子弹
+                if keys_pressed[pygame.K_SPACE]:
+                    new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
+                    self._bullets.add(new_bullet)  # 将新子弹加入编组进行管理
+                # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有 测试用
+                # if len(self._viruses) < self._NumOfViruses:
+                #     virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
+                #     new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
+                #     self._viruses.add(new_virus)
+
 
     def _update_scene(self):
         """
@@ -515,7 +521,6 @@ class Main:
             self._level_button1.draw_button()
             self._level_button2.draw_button()
             self._level_button3.draw_button()
-            self._usr.draw_button()
             #记分牌
             self._score_boarder.msg_set()
             self._score_boarder.draw_button()

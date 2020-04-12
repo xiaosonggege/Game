@@ -81,14 +81,14 @@ class Username:
         self._background_color = (255, 0, 0)
         self._text_color = (0, 255, 0)
         #字体
-        self._font = pygame.font.SysFont(name=None, size=10)
+        self._font = pygame.font.SysFont(name=None, size=30)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
         self.rect.centery = 470
         #文本surface
-        self._prep_msg = self._msg_set(msg=self._username)
+        self.msg_set(msg=self._username)
 
-    def _msg_set(self, msg:str):
+    def msg_set(self, msg:str):
         self._msg_image = self._font.render(msg, True, self._text_color, self._background_color)
         self._msg_image_rect = self._msg_image.get_rect()
         self._msg_image_rect.center = self.rect.center
@@ -103,19 +103,19 @@ class Username:
         时刻根据用户输入改变Surface中的文本信息
         :return:
         """
-        if is_delete:
+        if is_delete and len(self._username) > 4:
             self._username = self._username[:-1]
-            self._prep_msg = self._msg_set(msg=self._username)
+            self.msg_set(msg=self._username)
         elif added_word is not None:
             self._username = self._username + added_word
-            self._prep_msg = self._msg_set(msg=self._username)
+            self.msg_set(msg=self._username)
 
-    def input_event_checking(self):
+    def input_event_checking(self, keys_pressed):
         """
         检测按键，并根据按键输出
         :return:
         """
-        keys_pressed = pygame.key.get_pressed()
+        # keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_a]:
             return 'a'
         elif keys_pressed[pygame.K_b]:
@@ -168,7 +168,7 @@ class Username:
             return 'y'
         elif keys_pressed[pygame.K_z]:
             return 'z'
-        elif keys_pressed[pygame.K_DELETE]:
+        elif keys_pressed[pygame.K_BACKSPACE]:
             return 'delete'
         elif keys_pressed[pygame.K_RETURN]: #回车键
             return 'finish'
