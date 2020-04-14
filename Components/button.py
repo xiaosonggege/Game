@@ -87,6 +87,9 @@ class Username:
         self.rect.centery = 470
         #文本surface
         self.msg_set(msg=self._username)
+    @property
+    def username(self):
+        return self._username
 
     def msg_set(self, msg:str):
         self._msg_image = self._font.render(msg, True, self._text_color, self._background_color)

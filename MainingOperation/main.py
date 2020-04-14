@@ -55,7 +55,7 @@ class Main:
         #飞行器是否牺牲
         self._is_game_over = False
         #玩家用户名昵称 ##最终需要去掉
-        self._usrname = 'xing'
+        self._usrname = None
         #标记用户是否能输入用户名
         self._can_input_usrname = False
         # 是否按下查询历史记录的按钮
@@ -196,6 +196,7 @@ class Main:
             content = self._usr.input_event_checking(keys_pressed)
             # print(content)
             if content == 'finish':
+                self._usrname = self._usr.username
                 # self._usr.draw_button()
                 self._can_input_usrname = False
             elif content != 'delete':
