@@ -72,7 +72,7 @@ class LevelButton(StartButton):
             self._screen.blit(self._msg_image, self._msg_image_rect)
 
 class Username:
-    def __init__(self, screen:pygame.Surface, message:str='usr:'):
+    def __init__(self, screen:pygame.Surface, message:str=''):
         self._username = message
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()
@@ -86,7 +86,7 @@ class Username:
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
         self.rect.centery = 470
         #文本surface
-        self.msg_set(msg=self._username)
+        self.msg_set(msg='usr:')
     @property
     def username(self):
         return self._username
@@ -106,12 +106,12 @@ class Username:
         时刻根据用户输入改变Surface中的文本信息
         :return:
         """
-        if is_delete and len(self._username) > 4:
+        if is_delete and len(self._username) > 0:
             self._username = self._username[:-1]
-            self.msg_set(msg=self._username)
+            self.msg_set(msg='usr:' + self._username)
         elif added_word is not None:
             self._username = self._username + added_word
-            self.msg_set(msg=self._username)
+            self.msg_set(msg='usr:' + self._username)
 
     def input_event_checking(self, keys_pressed):
         """

@@ -315,6 +315,7 @@ class Main:
                 except StopIteration: #需要修改成病毒下放完后不自动退出！
                     print('消灭病毒数量为:', self._total_score)
                     print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
+                    #添加数据库写入操作，在游戏自己结束后也需要将数据存入数据库
                     sys.exit()
             # 更新所有病毒
             self._viruses.update()
@@ -451,11 +452,9 @@ class Main:
                 score.virus2 = self._virus2_num
                 score.virus3 = self._virus3_num
                 score.scoring()
-                score.create_data()
+                score.create_data() #如果用户第一次玩，需要先为此用户建立数据表
                 score.update_table()
                 score.update_usr_info()
-                #关闭数据库连接
-                score.closing_database()
 
         # 将用户的历史信息更新到历史记录按键后出现的面板上，需要呈现的是
         if self._look_over_history:
@@ -465,8 +464,6 @@ class Main:
                 # print(content)
                 self._score_screen.msg_set(*content)
                 self._score_screen.draw_button()
-                #关闭数据库连接
-                score.closing_database()
 
     def _boundary(self):
         """

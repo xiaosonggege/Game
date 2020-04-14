@@ -53,7 +53,17 @@ def run_game():
 
         pygame.display.flip()
 
+class C:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print(self.a, self.b)
 
 if __name__ == '__main__':
     # ex1()
-    run_game()
+    # run_game()
+    with C(2, 3) as c:
+        pass

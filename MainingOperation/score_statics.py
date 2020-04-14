@@ -30,9 +30,9 @@ class Score:
         self._virus3 = virus3_num
         self._db = pymysql.connect('localhost', 'root', 'xiaosonggege1025', 'Game')
         self._cursor = self._db.cursor()
-        self._score = self._virus1 * Score.score_per_virus['level1'] + \
-                      self._virus2 * Score.score_per_virus['level2'] + \
-                      self._virus3 * Score.score_per_virus['level3']
+        # self._score = self._virus1 * Score.score_per_virus['level1'] + \
+        #               self._virus2 * Score.score_per_virus['level2'] + \
+        #               self._virus3 * Score.score_per_virus['level3']
 
     name = ScoreProperty('name')
     virus1 = ScoreProperty('virus1')
@@ -194,6 +194,8 @@ class Score:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        #关闭数据库连接
+        self.closing_database()
         return True
 
 class ScoreBoarder:
