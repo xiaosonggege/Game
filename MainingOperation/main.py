@@ -217,13 +217,13 @@ class Main:
             if keys_pressed[pygame.K_q]:
                 print('消灭病毒数量为:', self._total_score)
                 print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
-                sys.exit()
+                sys.exit() #用户直接按q键时成绩不计入，直接退出
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     print('消灭病毒数量为:', self._total_score)
                     print(
                         '消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
-                    sys.exit()
+                    sys.exit() #用户按退出键时成绩不计入，直接退出
 
             if self._start_playing and not self._pause_playing:
                 # 对飞行器
@@ -316,7 +316,17 @@ class Main:
                     print('消灭病毒数量为:', self._total_score)
                     print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
                     #添加数据库写入操作，在游戏自己结束后也需要将数据存入数据库
-                    sys.exit()
+                    # sys.exit()
+                    self._congratulations.draw_button()
+                    with Score(name=self._usrname) as score:
+                        score.virus1 = self._virus1_num
+                        score.virus2 = self._virus2_num
+                        score.virus3 = self._virus3_num
+                        score.scoring()
+                        score.create_data()  # 如果用户第一次玩，需要先为此用户建立数据表
+                        score.update_table()
+                        score.update_usr_info()
+
             # 更新所有病毒
             self._viruses.update()
             # 更新所有子弹
@@ -492,6 +502,9 @@ class Main:
         self._game_over_button = StartButton(screen=self._screen, message='GAME OVER!',
                                    width=600, height=400, button_color=(0, 255, 0), text_color=(255, 255, 255),
                                    text_size=48, pos='center')
+        self._congratulations = StartButton(screen=self._screen, message='Congratulations!',
+                                            width=600, height=400, button_color=(0, 255, 0), text_color=(255, 255, 255),
+                                            text_size=48, pos='center')
         self._usr = Username(screen=self._screen)
         self._score_boarder = ScoreBoarder(screen=self._screen)
         self._score_screen = ScoreScreen(screen=self._screen)

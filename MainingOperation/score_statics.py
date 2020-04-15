@@ -12,7 +12,6 @@ import pymysql
 import pygame
 from MainingOperation.basic_settings import Settings
 
-
 class ScoreProperty:
     def __init__(self, name):
         self._name = '_' + name
@@ -169,25 +168,37 @@ class Score:
         """
         #usrname
         usrname = 'usrname: %s' % name
+        #判断用户名是否是新用户，如果是新用户则没有历史记录
+        sql_judge = 'show tables'
+        self._cursor.execute(sql_judge)
+        is_new_usrname = usrname[9:] in [i[0] for i in self._cursor.fetchall()]
+        # self._cursor.execute(sql_judge)
+        # print(is_new_usrname, self._cursor.fetchall())
+        if is_new_usrname:
+            # 历史最高分
+            sql0 = "select max_score from usr_info where name='%s'" % name
+            self._cursor.execute(sql0)
+            maxscore = 'max score: %s' % self._cursor.fetchone()[0]
 
-        #历史最高分
-        sql0 = "select max_score from usr_info where name='%s'" % name
-        self._cursor.execute(sql0)
-        maxscore = 'max score: %s' % self._cursor.fetchone()[0]
-
-        #十次最好成绩属性
-        sql1 = 'describe %s' % name
-        self._cursor.execute(sql1)
-        # column_name = ' '.join([e[0] for e in self._cursor.fetchall()])
-        column_name = '{0:8} {1:8} {2:8} {3:8}'.format(*[e[0] for e in self._cursor.fetchall()])
-        sql2 = 'select * from %s' % name
-        self._cursor.execute(sql2)
-        content = ['{0:8}    {1:8}    {2:8}    {3:8}'.format(*[str(e) for e in i]) for i in self._cursor.fetchall()]
-        #所有内容组成列表输出
-        content.insert(0, usrname)
-        content.insert(1, maxscore)
-        content.insert(2, column_name)
+            # 十次最好成绩属性
+            sql1 = 'describe %s' % name
+            self._cursor.execute(sql1)
+            # column_name = ' '.join([e[0] for e in self._cursor.fetchall()])
+            column_name = '{0:8} {1:8} {2:8} {3:8}'.format(*[e[0] for e in self._cursor.fetchall()])
+            sql2 = 'select * from %s' % name
+            self._cursor.execute(sql2)
+            content = ['{0:8}    {1:8}    {2:8}    {3:8}'.format(*[str(e) for e in i]) for i in self._cursor.fetchall()]
+            # 所有内容组成列表输出
+            content.insert(0, usrname)
+            content.insert(1, maxscore)
+            content.insert(2, column_name)
+        else:
+            maxscore = 'max score: %s' % 0
+            column_name = '{0:8} {1:8} {2:8} {3:8}'.format('virus1', 'virus2', 'virus3', 'score')
+            content = [maxscore, column_name]
         return content
+
+
 
     def __enter__(self):
         self._create_usrname_table()

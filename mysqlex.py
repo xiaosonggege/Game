@@ -13,20 +13,9 @@ import pymysql
 db = pymysql.connect('localhost', 'root',
                      'xiaosonggege1025', 'Game')
 cursor = db.cursor()
-
-# cursor.execute("""insert into user values (4, 'd', %s)""" % a)
-# cursor.execute("update user set name = 'd' where id = 3")
-# cursor.execute("delete from user where id = %s" % 3)
-# db.commit()
-# cursor.execute('show tables')
-# cursor.execute('select count(*) from user')
-sql0 = 'select virus1_total, virus2_total, virus3_total from %s' % 'usr_info'
-sql1 = 'describe usr_info'
-cursor.execute(sql0)
+sql = 'show tables'
+cursor.execute(sql)
+a = 'liu' in [i[0] for i in cursor.fetchall()]
+print(a)
 db.commit()
-str1 = [' '.join([str(e) for e in i]) for i in cursor.fetchall()]
-print(str1)
-# print(cursor.fetchall())
-# cursor.execute("select max_score from usr_info where name='song'")
-# print(cursor.fetchone()[0])
 db.close()
