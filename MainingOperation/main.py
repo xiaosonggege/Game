@@ -60,8 +60,12 @@ class Main:
         self._can_input_usrname = False
         # 是否按下查询历史记录的按钮
         self._look_over_history = False
+        #是否已经向数据库中存储完成
+        self._is_finished_storing = False
         # 重置标志
         self._reset = False
+        # 输出祝贺标语
+        self._need_congratulation = False
 
         #游戏等级
         # self._NumOfViruses = Main.level_virus['easy'] #改
@@ -162,6 +166,8 @@ class Main:
                 self._pause_playing = False
                 #游戏表示为未开始
                 self._start_playing = False
+                #庆祝标语不显示
+                self._need_congratulation = False
                 #游戏等级重置
                 self._level_button1.pressed = False
                 self._level_button2.pressed = False
@@ -244,12 +250,6 @@ class Main:
                 else:
                     self._can_down = False
 
-                # if keys_pressed[pygame.K_2]:
-                #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-                #                                size=self._size_big1)
-                # if keys_pressed[pygame.K_3]:
-                #     self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
-                #                                size=self._size_big2)
                 if keys_pressed[pygame.K_1]:
                     if not self._is_original:
                         self._aircraft.change_size(pos=(self._aircraft.rect.centerx, self._aircraft.rect.centery),
@@ -264,12 +264,6 @@ class Main:
                 if keys_pressed[pygame.K_SPACE]:
                     new_bullet = Bullet(screen=self._screen, aircraft=self._aircraft)
                     self._bullets.add(new_bullet)  # 将新子弹加入编组进行管理
-                # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有 测试用
-                # if len(self._viruses) < self._NumOfViruses:
-                #     virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
-                #     new_virus = Virus(screen=self._screen, virus_image=virus_image_path , pos_x=next(self._init_posxes)) #改
-                #     self._viruses.add(new_virus)
-
 
     def _update_scene(self):
         """
@@ -281,11 +275,6 @@ class Main:
         virus_image_path3 = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒3.jpeg'
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
-        # 测试病毒类
-        # virus_image_path = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
-        # self._virus = Virus(screen=self._screen, virus_image=virus_image_path,
-        #                     pos_x=int(self._screen.get_rect().centerx))
-        # self._virus.blit_virus()
         if self._start_playing and not self._pause_playing:
             # 如果游戏不停值或者未达到停止标志，比如赢得游戏和达到本等级病毒最大数量则病毒一直会有
             if self._virus_count <= self._NumOfViruses:  # 增加病毒数量计数，到达一定数量之后就投入新病毒
@@ -294,10 +283,6 @@ class Main:
                 # 打印病毒个数，打死的不算在内
                 print(len(self._viruses))
                 try:
-                    # # 病毒初始位置生成器
-                    # self._init_posxes = PositionInit(low=self._screen.get_rect().left,
-                    #                                  high=self._screen.get_rect().right - Settings().boundary_pos,
-                    #                                  count=self._NumOfViruses)  #
                     if self._virus_count <= int(self._NumOfViruses // 4):
                         new_virus = Virus(screen=self._screen, virus_image=virus_image_path1,
                                           pos_x=next(self._init_posxes))
@@ -317,15 +302,19 @@ class Main:
                     print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
                     #添加数据库写入操作，在游戏自己结束后也需要将数据存入数据库
                     # sys.exit()
-                    self._congratulations.draw_button()
-                    with Score(name=self._usrname) as score:
-                        score.virus1 = self._virus1_num
-                        score.virus2 = self._virus2_num
-                        score.virus3 = self._virus3_num
-                        score.scoring()
-                        score.create_data()  # 如果用户第一次玩，需要先为此用户建立数据表
-                        score.update_table()
-                        score.update_usr_info()
+                    self._need_congratulation = True
+                    self._start_playing = False
+                    if not self._is_finished_storing:
+                        with Score(name=self._usrname) as score:
+                            score.virus1 = self._virus1_num
+                            score.virus2 = self._virus2_num
+                            score.virus3 = self._virus3_num
+                            score.scoring()
+                            score.create_data()  # 如果用户第一次玩，需要先为此用户建立数据表
+                            score.update_table()
+                            score.update_usr_info()
+                        #将存储数据标志置True
+                        self._is_finished_storing = True
 
             # 更新所有病毒
             self._viruses.update()
@@ -370,15 +359,6 @@ class Main:
             elif self._aircraft.rect.right > self._aircraft.RectBorderOfScreen.right - Settings().boundary_pos:
                 self._aircraft.rect.right = self._aircraft.RectBorderOfScreen.right - Settings().boundary_pos
 
-            # #飞行器，子弹和病毒应该时刻在屏幕上绘制（已放在函数体最后部分了，此处暂且注释掉）
-            # self._aircraft.blitAircraft()
-            # # 绘制所有病毒
-            # for virus in self._viruses.sprites():
-            #     virus.blit_virus()
-            # # 在飞行器和病毒后面重绘所有子弹
-            # for bullet in self._bullets.sprites():  # 返回编组中的所有精灵的列表
-            #     bullet.draw_Bullet()
-            # #
             # 击中病毒的子弹以及被击中的病毒
             collisions = pygame.sprite.groupcollide( #collisions返回当前时刻的子弹和病毒碰撞字典
                 groupa=self._bullets, groupb=self._viruses, dokilla=True, dokillb=True)  # dokill是碰撞后是否立即删除
@@ -457,14 +437,17 @@ class Main:
         if self._is_game_over:
             self._game_over_button.draw_button()
             #将玩家本次游戏数据导入数据库，输出数据库信息到历史记录按键后出现的面板上
-            with Score(name=self._usrname) as score:
-                score.virus1 = self._virus1_num
-                score.virus2 = self._virus2_num
-                score.virus3 = self._virus3_num
-                score.scoring()
-                score.create_data() #如果用户第一次玩，需要先为此用户建立数据表
-                score.update_table()
-                score.update_usr_info()
+            if not self._is_finished_storing:
+                with Score(name=self._usrname) as score:
+                    score.virus1 = self._virus1_num
+                    score.virus2 = self._virus2_num
+                    score.virus3 = self._virus3_num
+                    score.scoring()
+                    score.create_data()  # 如果用户第一次玩，需要先为此用户建立数据表
+                    score.update_table()
+                    score.update_usr_info()
+                # 将存储数据标志置True
+                self._is_finished_storing = True
 
         # 将用户的历史信息更新到历史记录按键后出现的面板上，需要呈现的是
         if self._look_over_history:
@@ -474,6 +457,9 @@ class Main:
                 # print(content)
                 self._score_screen.msg_set(*content)
                 self._score_screen.draw_button()
+
+        if self._need_congratulation:
+            self._congratulations.draw_button()
 
     def _boundary(self):
         """
@@ -523,10 +509,6 @@ class Main:
 
             # 添加游戏边线
             self._boundary()
-            # self._button.draw_button()
-            # pygame.display.flip()
-            # 绘制开始按钮，在游戏未开始或者暂停时也依然在屏幕上呈现
-            # if not self._start_playing:
             self._button.draw_button()
             self._usr.draw_button() #用户名输入按钮
             self._level_button1.draw_button()

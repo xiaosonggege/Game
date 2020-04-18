@@ -34,8 +34,8 @@ class Settings:
         self._bullet_size = 5, 10
         self._bullet_speed = 30
         #virus
-        self._virus_size = 50, 50
-        self._virus_speed = 1.5
+        self._virus_size = 25, 25 #50, 50
+        self._virus_speed = 3
     boundary_pos = SettingsProperty('boundary_pos')
     screen_width = SettingsProperty('screen_width')
     screen_height = SettingsProperty('screen_height')
@@ -48,25 +48,25 @@ class Settings:
     virus_speed = SettingsProperty('virus_speed')
 
 #带有加速度
-class PosWithAccelerate:
-    def __init__(self, can_positive, can_negative, v):
-        self._time = 1
-        self._can_positive = can_positive
-        self._can_negative = can_negative
-        self._v = v
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        return True
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self._can_positive and not self._can_negative:
-            return self._v * self._time + 0.5 * 1 * self._v ** 2
+# class PosWithAccelerate:
+#     def __init__(self, can_positive, can_negative, v):
+#         self._time = 1
+#         self._can_positive = can_positive
+#         self._can_negative = can_negative
+#         self._v = v
+#
+#     def __enter__(self):
+#         return self
+#
+#     def __exit__(self, exc_type, exc_val, exc_tb):
+#         return True
+#
+#     def __iter__(self):
+#         return self
+#
+#     def __next__(self):
+#         if self._can_positive and not self._can_negative:
+#             return self._v * self._time + 0.5 * 1 * self._v ** 2
 
 
 
