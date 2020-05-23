@@ -10,6 +10,52 @@
 '''
 import pygame
 from MainingOperation.basic_settings import Settings
+
+class KeybordHint:
+    def __init__(self, screen:pygame.Surface, message:list,
+                 width:int=150, height:int=150, button_color=(100, 100, 100),
+                 text_color=(0, 0, 0), text_size=24, pos=None):
+        self._screen = screen
+        self._RectOfScreen = self._screen.get_rect()
+        #设置按钮
+        self._width, self._height = width, height
+        self._button_color = button_color
+        self._text_color = text_color
+        #None为使用pygame的默认字体
+        self._font = pygame.font.SysFont(name=None, size=text_size) #从系统字体库创建一个 Font 对象
+        #放置按钮位置
+        self.rect = pygame.Rect(0, 0, self._width, self._height)
+        self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2 if pos is None else self._RectOfScreen.centerx
+        self.rect.centery = self._height//2 if pos is None else self._RectOfScreen.centery
+        #文本Surface
+        self._msg_set(*message)
+
+    @property
+    def width_height(self):
+        return self._width, self._height
+    @width_height.setter
+    def width_height(self, value:tuple):
+        self._width, self._height = value
+
+    def _msg_set(self, *msgs):
+        # 将文本变成Surface对象
+        self._msg_images = []
+        for msg in msgs:
+            # None为使用pygame的默认字体
+            font = pygame.font.SysFont(name=None, size=24)
+            self._msg_images.append(font.render(msg, True, self._text_color, self._button_color))
+        self._msg_rects = [msg_image.get_rect() for msg_image in self._msg_images]
+        # 均匀码放各条记录
+        item_count = 0
+        for msg_image in self._msg_rects:
+            msg_image.left = self.rect.left  # 改到居中
+            msg_image.centery = self.rect.top + 10 + item_count * 2 * msg_image.height
+            item_count += 1
+
+    def draw_button(self):
+        self._screen.fill(color=self._button_color, rect=self.rect)  # screen上的第二层地板着色
+        [self._screen.blit(msg_image, msg_rect) for msg_image, msg_rect in zip(self._msg_images, self._msg_rects)]
+
 class StartButton:
     def __init__(self, screen:pygame.Surface, message:str,
                  width:int=100, height:int=50, button_color=(255, 0, 0),
@@ -25,7 +71,7 @@ class StartButton:
         #放置按钮位置
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2 if pos is None else self._RectOfScreen.centerx
-        self.rect.centery = self._height + 50 if pos is None else self._RectOfScreen.centery
+        self.rect.centery = self._height + 50 + 60 if pos is None else self._RectOfScreen.centery
         #文本Surface
         self._msg_set(msg=message)
 
@@ -55,7 +101,7 @@ class LevelButton(StartButton):
         # 均匀摆放等级按钮
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = int(self._RectOfScreen.right + Settings().boundary_pos * (int(message) * 0.25 - 1)) # (int(message)-1) * 2 * self._width
-        self.rect.centery = self._height + 200 #+130
+        self.rect.centery = self._height + 200 + 60 #+130
         self._prep_msg = super()._msg_set(msg=message)
         self._is_pressed = False
 
@@ -84,7 +130,7 @@ class Username:
         self._font = pygame.font.SysFont(name=None, size=30)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
-        self.rect.centery = 470
+        self.rect.centery = 470 + 60
         #文本surface
         self.msg_set(msg='usr:')
     @property
@@ -226,7 +272,7 @@ class HistoryRecord:
         self._font = pygame.font.SysFont(name=None, size=text_size)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._screen.get_rect().right - Settings().boundary_pos / 2
-        self.rect.centery = self._height + 350
+        self.rect.centery = self._height + 350 + 60
         self._msg_set(msg=message)
 
     def _msg_set(self, msg:str):
@@ -253,7 +299,7 @@ class Reset:
         #放置按钮位置
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2 if pos is None else self._RectOfScreen.centerx
-        self.rect.centery = self._height + 130 if pos is None else self._RectOfScreen.centery
+        self.rect.centery = self._height + 130 + 60 if pos is None else self._RectOfScreen.centery
         #文本Surface
         self._msg_set(msg=message)
 

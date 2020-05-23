@@ -223,7 +223,7 @@ class ScoreBoarder:
         self._font = pygame.font.SysFont(name=None, size=text_size)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
-        self.rect.centery = self._height + 270
+        self.rect.centery = self._height + 270 + 60
         self._msg = 0
 
     @property

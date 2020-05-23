@@ -13,7 +13,7 @@ import sys
 from MainingOperation.basic_settings import Settings
 from Components.aircraft import Aircraft
 from Components.bullet import Bullet
-from Components.button import StartButton, LevelButton, Username, ScoreScreen, HistoryRecord, Reset
+from Components.button import StartButton, LevelButton, Username, ScoreScreen, HistoryRecord, Reset, KeybordHint
 from pygame.sprite import Group
 from Components.virus import Virus, VirusStyle2, VirusStyle3
 from MainingOperation.score_statics import Score, ScoreBoarder
@@ -45,8 +45,8 @@ class Main:
         #
         self._screen = pygame.display.set_mode(size=(Settings().screen_width, Settings().screen_height))
         self._aircraft = Aircraft(self._screen)
-        self._bullets = Group() #创建存储子弹的编组
-        self._viruses = Group() #创建存储病毒的编组
+        # self._bullets = Group() #创建存储子弹的编组
+        # self._viruses = Group() #创建存储病毒的编组
         self._is_win = False #标志游戏输赢
         #游戏是否开始
         self._start_playing = False
@@ -158,6 +158,8 @@ class Main:
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
+                self._bullets = Group()  # 创建存储子弹的编组
+                self._viruses = Group()  # 创建存储病毒的编组
 
             #重置
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._reset_button):
@@ -168,6 +170,8 @@ class Main:
                 self._start_playing = False
                 #庆祝标语不显示
                 self._need_congratulation = False
+                #game over标语不显示
+                self._is_game_over = False
                 #游戏等级重置
                 self._level_button1.pressed = False
                 self._level_button2.pressed = False
@@ -180,13 +184,18 @@ class Main:
                 #飞船置于底端中心，大小为原始大小
                 self._aircraft.reset()
                 #子弹清零
-                bullet_num = len(self._bullets)
-                for num in range(bullet_num):
-                    self._bullets.sprites().pop(0)
+                # bullet_num = len(self._bullets)
+                # for num in range(bullet_num):
+                #     self._bullets.sprites().pop(0)
+                # self._bullets.sprites().clear()
+                del self._bullets
                 #病毒清零
-                virus_num = len(self._viruses)
-                for num in range(virus_num):
-                    self._viruses.sprites().pop(0)
+                # virus_num = len(self._viruses)
+                # for num in range(virus_num):
+                #     self._viruses.sprites().pop(0)
+                # self._viruses.sprites().clear()
+                del self._viruses
+                self._virus_count = 0
                 #游戏等级按键复原
                 for button in [self._level_button1, self._level_button2, self._level_button3]:
                     if button.pressed:
@@ -270,9 +279,9 @@ class Main:
         更新屏幕中的场景
         :return: None
         """
-        virus_image_path1 = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒1.jpeg'
-        virus_image_path2 = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒2.jpeg'
-        virus_image_path3 = '/Users/songyunlong/Desktop/c++程序设计实践课/病毒3.jpeg'
+        virus_image_path1 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture1.jpg'
+        virus_image_path2 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture2.jpg'
+        virus_image_path3 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture3.jpg'
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
         if self._start_playing and not self._pause_playing:
@@ -481,6 +490,7 @@ class Main:
         # 添加游戏边线
         self._boundary()
         # 按钮和记分牌
+        self._keyboardhint = KeybordHint(screen=self._screen, message=['Keyboard key tips:', '1:Shrink/Amplify','p:Pause', 'q:Quit'])
         self._button = StartButton(screen=self._screen, message='PLAY')
         self._level_button1 = LevelButton(screen=self._screen, message='1')
         self._level_button2 = LevelButton(screen=self._screen, message='2')
@@ -509,6 +519,7 @@ class Main:
 
             # 添加游戏边线
             self._boundary()
+            self._keyboardhint.draw_button()
             self._button.draw_button()
             self._usr.draw_button() #用户名输入按钮
             self._level_button1.draw_button()
