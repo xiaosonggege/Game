@@ -194,11 +194,23 @@ class Score:
             content.insert(2, column_name)
         else:
             maxscore = 'max score: %s' % 0
-            column_name = '{0:8} {1:8} {2:8} {3:8}'.format('virus1', 'virus2', 'virus3', 'score')
+            column_name = '{0:10} {1:10} {2:10} {3:10}'.format('virus1', 'virus2', 'virus3', 'score')
             content = [maxscore, column_name]
         return content
 
-
+    def outprint_usr_info(self):
+        """
+        对usr_info数据表信息进行打印
+        :return:
+        """
+        sql0 = "select * from usr_info"
+        self._cursor.execute(sql0)
+        content = ['{0:<12}          {1:<12}         {2:<12}         {3:<12}         {4:<12}'.format(i[0], str(i[1]), str(i[2]), str(i[3]), str(i[4])) for i in self._cursor.fetchall()]
+        # print(self._cursor.fetchall())
+        #所有内容组成列表输出
+        column_name = '{0:<12}   {1:<12}   {2:<12}   {3:<12}   {4:<12}'.format('name', 'virus1_total', 'virus2_total', 'virus3_total', 'max_score')
+        content.insert(0, column_name)
+        return content
 
     def __enter__(self):
         self._create_usrname_table()
@@ -253,4 +265,7 @@ if __name__ == '__main__':
         # score.update_table()
         # # print(score.total_virus())
         # score.update_usr_info()
-        print(score.outprint('song'))
+        # print(score.outprint('song'))
+        # score.outprint_usr_info()
+        for i in score.outprint_usr_info():
+            print(i)

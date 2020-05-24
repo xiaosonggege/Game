@@ -42,7 +42,7 @@ class Aircraft:
         :param screen: 屏幕Surface
         """
         self._screen = screen #屏幕Surface
-        self._ImageOfAircraft = pygame.image.load('/Users/songyunlong/Desktop/c++程序设计实践课/ship.bmp') #飞行器Surface
+        self._ImageOfAircraft = pygame.image.load('/Users/songyunlong/Desktop/c++程序设计实践课/ship.png') #飞行器Surface
         self._RectBorderOfScreen = self._screen.get_rect() #屏幕矩形框Rect
         self._rect = self._ImageOfAircraft.get_rect() #飞行器矩形框Rect
         self._v = 30 #飞船速度

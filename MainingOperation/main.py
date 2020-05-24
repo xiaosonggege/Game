@@ -13,7 +13,7 @@ import sys
 from MainingOperation.basic_settings import Settings
 from Components.aircraft import Aircraft
 from Components.bullet import Bullet
-from Components.button import StartButton, LevelButton, Username, ScoreScreen, HistoryRecord, Reset, KeybordHint
+from Components.button import StartButton, LevelButton, Username, ScoreScreen, HistoryRecord, Reset, KeybordHint, HistoryRecord2
 from pygame.sprite import Group
 from Components.virus import Virus, VirusStyle2, VirusStyle3
 from MainingOperation.score_statics import Score, ScoreBoarder
@@ -45,8 +45,6 @@ class Main:
         #
         self._screen = pygame.display.set_mode(size=(Settings().screen_width, Settings().screen_height))
         self._aircraft = Aircraft(self._screen)
-        # self._bullets = Group() #创建存储子弹的编组
-        # self._viruses = Group() #创建存储病毒的编组
         self._is_win = False #标志游戏输赢
         #游戏是否开始
         self._start_playing = False
@@ -60,6 +58,8 @@ class Main:
         self._can_input_usrname = False
         # 是否按下查询历史记录的按钮
         self._look_over_history = False
+        # 是否按下查询总历史记录的按钮
+        self._look_over_history2 = False
         #是否已经向数据库中存储完成
         self._is_finished_storing = False
         # 重置标志
@@ -155,6 +155,12 @@ class Main:
                     self._look_over_history = True
                 else:
                     self._look_over_history = False
+
+            if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._history_record2):
+                if not self._look_over_history2:
+                    self._look_over_history2 = True
+                else:
+                    self._look_over_history2 = False
 
             if mouse_in_button_region(mouse_x=mouse_x, mouse_y=mouse_y, button=self._button):
                 self._start_playing = True
@@ -279,9 +285,9 @@ class Main:
         更新屏幕中的场景
         :return: None
         """
-        virus_image_path1 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture1.jpg'
-        virus_image_path2 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture2.jpg'
-        virus_image_path3 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture3.jpg'
+        virus_image_path1 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture1.png'
+        virus_image_path2 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture2.png'
+        virus_image_path3 = '/Users/songyunlong/Desktop/c++程序设计实践课/picture3.png'
         bg_color = (100, 100, 100)
         self._screen.fill(bg_color)
         if self._start_playing and not self._pause_playing:
@@ -467,6 +473,15 @@ class Main:
                 self._score_screen.msg_set(*content)
                 self._score_screen.draw_button()
 
+        # 将用户的历史信息更新到历史记录按键后出现的面板上，需要呈现的是
+        if self._look_over_history2:
+            with Score(name=self._usrname) as score:
+                # 将历史记录打印到面板上
+                content = score.outprint_usr_info()
+                # print(content)
+                self._score_screen2.msg_set(*content)
+                self._score_screen2.draw_button()
+
         if self._need_congratulation:
             self._congratulations.draw_button()
 
@@ -504,7 +519,9 @@ class Main:
         self._usr = Username(screen=self._screen)
         self._score_boarder = ScoreBoarder(screen=self._screen)
         self._score_screen = ScoreScreen(screen=self._screen)
+        self._score_screen2 = ScoreScreen(screen=self._screen, width=800)
         self._history_record = HistoryRecord(screen=self._screen, message='HISTORY RECORD')
+        self._history_record2 = HistoryRecord2(screen=self._screen, message='HISTORY ALL')
         self._reset_button = Reset(screen=self._screen, message='RESET')
         #
         self._aircraft.v = 30
@@ -530,6 +547,8 @@ class Main:
             self._score_boarder.draw_button()
             #历史记录键
             self._history_record.draw_button()
+            #总历史记录键
+            self._history_record2.draw_button()
             # 重置按钮
             self._reset_button.draw_button()
             pygame.display.flip()

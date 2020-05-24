@@ -34,7 +34,7 @@ class Settings:
         self._bullet_size = 5, 10
         self._bullet_speed = 30
         #virus
-        self._virus_size = 25, 25 #50, 50
+        self._virus_size = 50, 50
         self._virus_speed = 3
     boundary_pos = SettingsProperty('boundary_pos')
     screen_width = SettingsProperty('screen_width')

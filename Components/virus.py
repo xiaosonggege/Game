@@ -33,7 +33,8 @@ class Virus(Sprite):
     def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
         super().__init__()
         self._screen = screen
-        self._ImageOfVirus = pygame.transform.smoothscale(pygame.image.load(virus_image),  Settings().virus_size)
+        self._ImageOfVirus = pygame.transform.smoothscale(pygame.image.load(virus_image),
+                                                          (Settings().virus_size[0]*2, Settings().virus_size[-1]*2))
         self.rect = self._ImageOfVirus.get_rect()
         self._virus_speed = Settings().virus_speed
         self._dead = False #标志着病毒的死亡
@@ -94,6 +95,7 @@ class VirusStyle2(Virus):
     def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
         super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
         self._sore = 3
+        self._ImageOfVirus = pygame.transform.smoothscale(pygame.image.load(virus_image), Settings().virus_size)
 
 class VirusStyle3(Virus):
     """
@@ -102,6 +104,7 @@ class VirusStyle3(Virus):
     def __init__(self, screen:pygame.Surface, virus_image, pos_x:int):
         super().__init__(screen=screen, virus_image=virus_image, pos_x=pos_x)
         self._score = 5
+        self._ImageOfVirus = pygame.transform.smoothscale(pygame.image.load(virus_image), Settings().virus_size)
 
     @classmethod
     def spliting(cls, screen:pygame.Surface, virus_image, right_pos):
