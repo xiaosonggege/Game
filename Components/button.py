@@ -58,7 +58,7 @@ class KeybordHint:
 
 class StartButton:
     def __init__(self, screen:pygame.Surface, message:str,
-                 width:int=100, height:int=50, button_color=(255, 0, 0),
+                 width:int=100, height:int=50, button_color=(100, 149, 237),
                  text_color=(0, 0, 0), text_size=48, pos=None):
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()
@@ -123,14 +123,14 @@ class Username:
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()
         #设置输入框大小
-        self._width, self._height = 100, 50
-        self._background_color = (255, 0, 0)
+        self._width, self._height = 150, 50
+        self._background_color = (176, 224, 230)
         self._text_color = (0, 0, 0)
         #字体
         self._font = pygame.font.SysFont(name=None, size=30)
         self.rect = pygame.Rect(0, 0, self._width, self._height)
         self.rect.centerx = self._RectOfScreen.right - Settings().boundary_pos / 2
-        self.rect.centery = 530 + 60
+        self.rect.centery = 530 + 70
         #文本surface
         self.msg_set(msg='usr:')
     @property
@@ -243,7 +243,7 @@ class Username:
             return 'finish'
 
 class ScoreScreen:
-    def __init__(self, screen:pygame.Surface, button_color=(255, 0, 0), text_color=(0, 0, 0), width=None):
+    def __init__(self, screen:pygame.Surface, button_color=(221, 160, 221), text_color=(0, 0, 0), width=None):
         self._screen = screen
         #设置按钮
         self._width = int(self._screen.get_rect().height / 2) if width is None else width
@@ -282,7 +282,7 @@ class ScoreScreen:
 
 class HistoryRecord:
     def __init__(self, screen:pygame.Surface, message:str,
-                 button_color=(255, 0, 0), text_color=(0, 0, 0), text_size=23):
+                 button_color=(176, 224, 230), text_color=(0, 0, 0), text_size=23):
         self._screen = screen
         #设置按钮
         self._width = 150
@@ -306,7 +306,7 @@ class HistoryRecord:
 
 class HistoryRecord2:
     def __init__(self, screen:pygame.Surface, message:str,
-                 button_color=(255, 0, 0), text_color=(0, 0, 0), text_size=23):
+                 button_color=(176, 224, 230), text_color=(0, 0, 0), text_size=23):
         self._screen = screen
         #设置按钮
         self._width = 150
@@ -330,7 +330,7 @@ class HistoryRecord2:
 
 class Reset:
     def __init__(self, screen:pygame.Surface, message:str,
-                 width:int=100, height:int=50, button_color=(255, 0, 0),
+                 width:int=100, height:int=50, button_color=(100, 149, 237),
                  text_color=(0, 0, 0), text_size=38, pos=None):
         self._screen = screen
         self._RectOfScreen = self._screen.get_rect()

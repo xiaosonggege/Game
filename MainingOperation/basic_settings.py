@@ -30,8 +30,8 @@ class Settings:
         self._bg_color = (230, 230, 230) if not background_path else None
         self._background = pygame.image.load(background_path) if background_path is not None else None
         #bullet
-        self._bullet_color = 250, 60, 60
-        self._bullet_size = 5, 10
+        self._bullet_color = 152, 251, 152
+        self._bullet_size = 8, 12
         self._bullet_speed = 30
         #virus
         self._virus_size = 50, 50

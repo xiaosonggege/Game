@@ -18,6 +18,7 @@ from pygame.sprite import Group
 from Components.virus import Virus, VirusStyle2, VirusStyle3
 from MainingOperation.score_statics import Score, ScoreBoarder
 import numpy as np
+from itertools import cycle
 
 def PositionInit(low:int, high:int, count:int):
     """
@@ -187,19 +188,13 @@ class Main:
                 self._virus1_num = 0
                 self._virus2_num = 0
                 self._virus3_num = 0
+                #记分牌清零
+                self._score_boarder.msg = 0
                 #飞船置于底端中心，大小为原始大小
                 self._aircraft.reset()
                 #子弹清零
-                # bullet_num = len(self._bullets)
-                # for num in range(bullet_num):
-                #     self._bullets.sprites().pop(0)
-                # self._bullets.sprites().clear()
                 del self._bullets
                 #病毒清零
-                # virus_num = len(self._viruses)
-                # for num in range(virus_num):
-                #     self._viruses.sprites().pop(0)
-                # self._viruses.sprites().clear()
                 del self._viruses
                 self._virus_count = 0
                 #游戏等级按键复原
@@ -313,23 +308,57 @@ class Main:
                     self._viruses.add(new_virus)
                     self._virus_count += 1
                 except StopIteration: #需要修改成病毒下放完后不自动退出！
-                    print('消灭病毒数量为:', self._total_score)
-                    print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
-                    #添加数据库写入操作，在游戏自己结束后也需要将数据存入数据库
-                    # sys.exit()
-                    self._need_congratulation = True
-                    self._start_playing = False
-                    if not self._is_finished_storing:
-                        with Score(name=self._usrname) as score:
-                            score.virus1 = self._virus1_num
-                            score.virus2 = self._virus2_num
-                            score.virus3 = self._virus3_num
-                            score.scoring()
-                            score.create_data()  # 如果用户第一次玩，需要先为此用户建立数据表
-                            score.update_table()
-                            score.update_usr_info()
-                        #将存储数据标志置True
-                        self._is_finished_storing = True
+                    #不加入病毒全部消失前提前出现庆祝标志
+                    # print('消灭病毒数量为:', self._total_score)
+                    # print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num, self._virus3_num))
+                    # #添加数据库写入操作，在游戏自己结束后也需要将数据存入数据库
+                    # # sys.exit()
+                    # self._need_congratulation = True
+                    # self._start_playing = False
+                    # if not self._is_finished_storing:
+                    #     with Score(name=self._usrname) as score:
+                    #         score.virus1 = self._virus1_num
+                    #         score.virus2 = self._virus2_num
+                    #         score.virus3 = self._virus3_num
+                    #         score.scoring()
+                    #         score.create_data()  # 如果用户第一次玩，需要先为此用户建立数据表
+                    #         score.update_table()
+                    #         score.update_usr_info()
+                    #     #将存储数据标志置True
+                    #     self._is_finished_storing = True
+                    #病毒全部消失后出现
+                    print('病毒已全部加载完成!')
+            flag = True  # 病毒全部消失标记
+            for virus in self._viruses.sprites():
+                #病毒上边界全部低于飞行器下边界结束
+                if virus.rect.top <= self._aircraft.rect.bottom:
+                    flag = False
+                    break
+                #病毒全部从屏幕消失结束
+                # if virus.rect.top <= self._screen.get_rect().bottom:
+                #     flag = False
+                #     break
+            if flag:
+                print('消灭病毒数量为:', self._total_score)
+                print('消灭v1病毒数为{0},v2病毒数为{1},v3病毒数为{2}'.format(self._virus1_num, self._virus2_num,
+                                                                   self._virus3_num))
+                # 添加数据库写入操作，在游戏自己结束后也需要将数据存入数据库
+                # sys.exit()
+                self._need_congratulation = True
+                self._start_playing = False
+                if not self._is_finished_storing:
+                    with Score(name=self._usrname) as score:
+                        score.virus1 = self._virus1_num
+                        score.virus2 = self._virus2_num
+                        score.virus3 = self._virus3_num
+                        score.scoring()
+                        score.create_data()  # 如果用户第一次玩，需要先为此用户建立数据表
+                        score.update_table()
+                        score.update_usr_info()
+                    # 将存储数据标志置True
+                    self._is_finished_storing = True
+
+
 
             # 更新所有病毒
             self._viruses.update()
@@ -511,14 +540,14 @@ class Main:
         self._level_button2 = LevelButton(screen=self._screen, message='2')
         self._level_button3 = LevelButton(screen=self._screen, message='3')
         self._game_over_button = StartButton(screen=self._screen, message='GAME OVER!',
-                                   width=600, height=400, button_color=(0, 255, 0), text_color=(255, 255, 255),
+                                   width=600, height=400, button_color=(255, 127, 80), text_color=(0, 0, 0),
                                    text_size=48, pos='center')
         self._congratulations = StartButton(screen=self._screen, message='Congratulations!',
-                                            width=600, height=400, button_color=(0, 255, 0), text_color=(255, 255, 255),
+                                            width=600, height=400, button_color=(255, 127, 80), text_color=(0, 0, 0),
                                             text_size=48, pos='center')
         self._usr = Username(screen=self._screen)
         self._score_boarder = ScoreBoarder(screen=self._screen)
-        self._score_screen = ScoreScreen(screen=self._screen)
+        self._score_screen = ScoreScreen(screen=self._screen, width=500)
         self._score_screen2 = ScoreScreen(screen=self._screen, width=800)
         self._history_record = HistoryRecord(screen=self._screen, message='HISTORY RECORD')
         self._history_record2 = HistoryRecord2(screen=self._screen, message='HISTORY ALL')
